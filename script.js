@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', iniciarScanner);
 // --- FUNÇÃO DE BUSCA NA API DE PRODUTOS ---
 
 // Substitua "SUA_API_KEY" pela sua chave de autenticação real da Cosmos ou outra API.
-const API_KEY = "SUA_API_KEY"; 
+const API_KEY = "P7uKcTcma8P8GLzyw0ICeA"; 
 const COSMOS_API_URL = "https://api.cosmos.bluesoft.com.br/gtins/";
 
 async function buscarProduto(ean) {
