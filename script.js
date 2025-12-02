@@ -6,7 +6,7 @@ const config = {
         target: document.querySelector('#interactive'),
         constraints: {
             width: 640,
-            height: 480,
+            height: 280,
             facingMode: "environment"
         },
     },
