@@ -42,3 +42,24 @@ header {
 strong {
     color: #007bff;
 }
+
+#btn-iniciar-scanner {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #28a745; /* Verde */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+#btn-iniciar-scanner:hover {
+    background-color: #218838;
+}
+
+#btn-iniciar-scanner:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
