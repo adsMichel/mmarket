@@ -16,7 +16,7 @@ const config = {
 };
 
 let scannerEmFuncionamento = false;
-let codigoEncontrado = null; 
+let codigoEncontrado = null;
 
 // Elementos do DOM
 const btnScanner = document.getElementById('btn-iniciar-scanner');
@@ -28,22 +28,65 @@ const inputQuantidade = document.getElementById('input-quantidade');
 const inputValor = document.getElementById('input-valor');
 const btnAdicionar = document.getElementById('btn-adicionar');
 
+// Função de formatação para o padrão monetário brasileiro
+function formatarValor(valor) {
+    // Tenta converter o valor (string) para float, tratando vírgulas como decimais
+    const numero = parseFloat(String(valor).replace('.', '').replace(',', '.'));
+
+    // Se não for um número válido, retorna vazio ou '0.00'
+    if (isNaN(numero)) {
+        return '';
+    }
+
+    // Usa Intl.NumberFormat para formatar no padrão BRL (R$ 1.234,56)
+    return numero.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+// Listener para formatar o valor enquanto o usuário digita
+inputValor.addEventListener('input', function (event) {
+    let valor = inputValor.value;
+
+    // 1. Limpa o valor removendo tudo que não for dígito (0-9)
+    // Isso evita problemas de formatação enquanto o usuário digita
+    valor = valor.replace(/\D/g, '');
+
+    // 2. Se não houver dígitos, limpa o campo e sai
+    if (valor.length === 0) {
+        inputValor.value = '';
+        return;
+    }
+
+    // 3. Converte para o formato de centavos (ex: "12345" vira 123.45)
+    // Divide por 100 para obter as duas casas decimais
+    const valorNumerico = parseInt(valor) / 100;
+
+    // 4. Aplica a formatação e preenche o input.
+    // Usamos toLocaleString para garantir a vírgula como separador decimal.
+    inputValor.value = valorNumerico.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+});
+
 
 // --- 1. FUNÇÕES DE CONTROLE DO SCANNER ---
 
 function pararScanner() {
     if (!scannerEmFuncionamento) return;
-    
+
     Quagga.stop();
     scannerEmFuncionamento = false;
     codigoEncontrado = null; // Reseta para permitir nova leitura
-    
+
     // Atualiza o estado do botão
     btnScanner.textContent = '📷 Ler Código';
     btnScanner.disabled = false;
-    
+
     // Limpa a área de visualização, se necessário (o Quagga.stop() faz a maior parte)
-    document.getElementById('interactive').innerHTML = ''; 
+    document.getElementById('interactive').innerHTML = '';
     console.log("Scanner QuaggaJS parado.");
 }
 
@@ -57,7 +100,7 @@ function iniciarScanner() {
     nomeProdutoEl.textContent = 'Aguardando leitura...';
 
 
-    Quagga.init(config, function(err) {
+    Quagga.init(config, function (err) {
         if (err) {
             console.error(err);
             alert("Erro ao iniciar a câmera! Verifique as permissões.");
@@ -71,15 +114,15 @@ function iniciarScanner() {
 }
 
 // Quando um código é detectado
-Quagga.onDetected(function(data) {
+Quagga.onDetected(function (data) {
     const codigo = data.codeResult.code;
-    
+
     if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
         codigoEncontrado = codigo;
-        
+
         // ********* 🛑 Ação Principal: Parar a câmera após a leitura *********
         pararScanner();
-        
+
         // Chamada da função para buscar o produto na API
         buscarProduto(codigo);
     }
@@ -88,18 +131,18 @@ Quagga.onDetected(function(data) {
 // Funções de controle do Modal
 function abrirModal(nome, ean) {
     modalProductName.textContent = nome;
-    
+
     // Opcional: Limpar/Resetar os inputs a cada abertura
-    inputQuantidade.value = 1;
-    inputValor.value = ''; // Pode preencher com valor de API se houver
+    inputQuantidade.value = 0;
+    inputValor.value = '';
 
     modal.style.display = 'block';
-    
+
     // Foco na quantidade para facilitar a digitação
     inputQuantidade.focus();
-    
+
     // Armazena o EAN para uso posterior (ex: função Adicionar)
-    modal.dataset.ean = ean; 
+    modal.dataset.ean = ean;
 }
 
 function fecharModal() {
@@ -107,15 +150,15 @@ function fecharModal() {
 }
 
 // Quando um código é detectado (mantido)
-Quagga.onDetected(function(data) {
+Quagga.onDetected(function (data) {
     const codigo = data.codeResult.code;
-    
+
     if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
         codigoEncontrado = codigo;
-        
+
         // Parar a câmera após a leitura
         pararScanner();
-        
+
         // Chamada da função para buscar o produto na API
         buscarProduto(codigo);
     }
@@ -127,26 +170,26 @@ Quagga.onDetected(function(data) {
 // --- EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', () => {
     btnScanner.addEventListener('click', iniciarScanner);
-    
+
     // Fechar o modal ao clicar no 'x'
     closeModalBtn.addEventListener('click', fecharModal);
-    
+
     // Fechar o modal ao clicar fora dele
     window.addEventListener('click', (event) => {
         if (event.target == modal) {
             fecharModal();
         }
     });
-    
+
     // Ação do botão Adicionar (apenas um exemplo de console.log)
     btnAdicionar.addEventListener('click', () => {
         const ean = modal.dataset.ean;
         const nome = modalProductName.textContent;
         const quantidade = inputQuantidade.value;
         const valor = inputValor.value;
-        
+
         console.log(`Adicionado: EAN=${ean}, Produto=${nome}, Qtd=${quantidade}, Valor=${valor}`);
-        
+
         alert(`Produto adicionado!\n${nome} (Qtd: ${quantidade}, R$ ${valor})`);
         fecharModal();
     });
@@ -158,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- 3. FUNÇÃO DE BUSCA NA API DE PRODUTOS (Mantida do exemplo anterior) ---
 
 // --- FUNÇÃO DE BUSCA NA API DE PRODUTOS (MODIFICADA) ---
-const API_KEY = "P7uKcTcma8P8GLzyw0ICeA"; 
+const API_KEY = "P7uKcTcma8P8GLzyw0ICeA";
 const COSMOS_API_URL = "https://api.cosmos.bluesoft.com.br/gtins/";
 
 async function buscarProduto(ean) {
@@ -170,7 +213,7 @@ async function buscarProduto(ean) {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'X-Cosmos-Token': API_KEY, 
+                'X-Cosmos-Token': API_KEY,
                 'Content-Type': 'application/json'
             }
         });
@@ -182,12 +225,12 @@ async function buscarProduto(ean) {
 
         const data = await response.json();
         const nomeProduto = data.description || 'Descrição não disponível';
-        
+
         nomeProdutoEl.textContent = nomeProduto; // Atualiza o texto abaixo do scanner
-        
+
         // ********* 🚀 NOVO: Abrir o modal com o nome do produto *********
         abrirModal(nomeProduto, ean);
-        
+
     } catch (error) {
         console.error("Erro na busca da API:", error);
         nomeProdutoEl.textContent = 'Falha ao conectar com o serviço de produtos.';
