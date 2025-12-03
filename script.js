@@ -1,179 +1,199 @@
-body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+// Configurações do QuaggaJS (mantidas)
+const config = {
+    inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: document.querySelector('#interactive'),
+        constraints: {
+            width: 640,
+            height: 480,
+            facingMode: "environment"
+        },
+    },
+    decoder: {
+        readers: ["ean_reader"]
+    }
+};
+
+let scannerEmFuncionamento = false;
+let codigoEncontrado = null; 
+
+// Elementos do DOM
+const btnScanner = document.getElementById('btn-iniciar-scanner');
+const codigoLidoEl = document.getElementById('codigo-lido');
+const nomeProdutoEl = document.getElementById('nome-produto');
+const modal = document.getElementById('product-modal');
+const closeModalBtn = document.querySelector('.close-button');
+const modalProductName = document.getElementById('modal-product-name');
+const inputQuantidade = document.getElementById('input-quantidade');
+const inputValor = document.getElementById('input-valor');
+const btnAdicionar = document.getElementById('btn-adicionar');
+
+
+// --- 1. FUNÇÕES DE CONTROLE DO SCANNER ---
+
+function pararScanner() {
+    if (!scannerEmFuncionamento) return;
+    
+    Quagga.stop();
+    scannerEmFuncionamento = false;
+    codigoEncontrado = null; // Reseta para permitir nova leitura
+    
+    // Atualiza o estado do botão
+    btnScanner.textContent = '📷 Ler Código';
+    btnScanner.disabled = false;
+    
+    // Limpa a área de visualização, se necessário (o Quagga.stop() faz a maior parte)
+    document.getElementById('interactive').innerHTML = ''; 
+    console.log("Scanner QuaggaJS parado.");
 }
 
-header {
-    background-color: rgb(184, 187, 157);
-    color: white;
-    padding: 2px 0;
+
+function iniciarScanner() {
+    if (scannerEmFuncionamento) return;
+
+    // Atualiza o estado do botão
+    btnScanner.textContent = 'Procurando...';
+    btnScanner.disabled = true; // Desabilita o botão enquanto a câmera está aberta
+    codigoLidoEl.textContent = 'Aguardando leitura...';
+    nomeProdutoEl.textContent = 'Aguardando leitura...';
+
+
+    Quagga.init(config, function(err) {
+        if (err) {
+            console.error(err);
+            alert("Erro ao iniciar a câmera! Verifique as permissões.");
+            pararScanner(); // Chama parar para resetar o botão
+            return;
+        }
+        Quagga.start();
+        scannerEmFuncionamento = true;
+        console.log("Scanner QuaggaJS iniciado.");
+    });
 }
 
-main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+// Quando um código é detectado
+Quagga.onDetected(function(data) {
+    const codigo = data.codeResult.code;
+    
+    if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
+        codigoEncontrado = codigo;
+        codigoLidoEl.textContent = codigo;
+        
+        // ********* 🛑 Ação Principal: Parar a câmera após a leitura *********
+        pararScanner();
+        
+        // Chamada da função para buscar o produto na API
+        buscarProduto(codigo);
+    }
+});
+
+// Funções de controle do Modal
+function abrirModal(nome, ean) {
+    modalProductName.textContent = nome;
+    
+    // Opcional: Limpar/Resetar os inputs a cada abertura
+    inputQuantidade.value = 1;
+    inputValor.value = ''; // Pode preencher com valor de API se houver
+
+    modal.style.display = 'block';
+    
+    // Foco na quantidade para facilitar a digitação
+    inputQuantidade.focus();
+    
+    // Armazena o EAN para uso posterior (ex: função Adicionar)
+    modal.dataset.ean = ean; 
 }
 
-main button {
-    margin-top: 100px;
+function fecharModal() {
+    modal.style.display = 'none';
 }
 
-/* Estilo para a área de visualização da câmera (obrigatório para QuaggaJS) */
-#interactive.viewport {
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    margin: 20px auto;
-    height: 180px; 
-    overflow: hidden;
-}
+// Quando um código é detectado (mantido)
+Quagga.onDetected(function(data) {
+    const codigo = data.codeResult.code;
+    
+    if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
+        codigoEncontrado = codigo;
+        codigoLidoEl.textContent = codigo;
+        
+        // Parar a câmera após a leitura
+        pararScanner();
+        
+        // Chamada da função para buscar o produto na API
+        buscarProduto(codigo);
+    }
+});
 
-#interactive.viewport canvas, #interactive.viewport video {
-    width: 100%;
-    height: 100%;
-    /* Garante que o vídeo preencha a div sem distorcer (em geral) */
-    object-fit: cover; 
-}
 
-#resultado {
-    margin: 20px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+// --- 2. EVENT LISTENER PARA O BOTÃO ---
 
-strong {
-    color: #007bff;
-}
+// --- EVENT LISTENERS ---
+document.addEventListener('DOMContentLoaded', () => {
+    btnScanner.addEventListener('click', iniciarScanner);
+    
+    // Fechar o modal ao clicar no 'x'
+    closeModalBtn.addEventListener('click', fecharModal);
+    
+    // Fechar o modal ao clicar fora dele
+    window.addEventListener('click', (event) => {
+        if (event.target == modal) {
+            fecharModal();
+        }
+    });
+    
+    // Ação do botão Adicionar (apenas um exemplo de console.log)
+    btnAdicionar.addEventListener('click', () => {
+        const ean = modal.dataset.ean;
+        const nome = modalProductName.textContent;
+        const quantidade = inputQuantidade.value;
+        const valor = inputValor.value;
+        
+        console.log(`Adicionado: EAN=${ean}, Produto=${nome}, Qtd=${quantidade}, Valor=${valor}`);
+        
+        alert(`Produto adicionado!\n${nome} (Qtd: ${quantidade}, R$ ${valor})`);
+        fecharModal();
+    });
+});
 
-#btn-iniciar-scanner {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: rgb(184, 187, 157);
-    color: black;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: background-color 0.3s;
-}
 
-#btn-iniciar-scanner:hover {
-    background-color: rgb(176, 182, 119);
-}
 
-#btn-iniciar-scanner:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
-}
 
-/* ... (Seções anteriores do styles.css) ... */
+// --- 3. FUNÇÃO DE BUSCA NA API DE PRODUTOS (Mantida do exemplo anterior) ---
 
-/* --- Estilos do Modal --- */
-.modal {
-    display: none; /* Oculto por padrão */
-    position: fixed; /* Fixado na tela */
-    z-index: 1; /* Fica acima de tudo */
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%;
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.4); /* Fundo preto semi-transparente */
-}
+// --- FUNÇÃO DE BUSCA NA API DE PRODUTOS (MODIFICADA) ---
+const API_KEY = "P7uKcTcma8P8GLzyw0ICeA"; 
+const COSMOS_API_URL = "https://api.cosmos.bluesoft.com.br/gtins/";
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% do topo e centralizado */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Largura do conteúdo do modal */
-    max-width: 400px;
-    border-radius: 10px;
-    position: relative;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
-}
+async function buscarProduto(ean) {
+    nomeProdutoEl.textContent = 'Buscando dados do produto...';
 
-.close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
+    const url = `${COSMOS_API_URL}${ean}`;
 
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Cosmos-Token': API_KEY, 
+                'Content-Type': 'application/json'
+            }
+        });
 
-/* Estilos para inputs e botão dentro do modal */
-.modal-content label, 
-.modal-content input, 
-.modal-content button {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-}
+        if (!response.ok) {
+            nomeProdutoEl.textContent = `Erro: ${response.status}. Produto não encontrado ou falha na API.`;
+            return;
+        }
 
-.modal-content input {
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-#btn-adicionar {
-    background-color: #007bff; /* Azul */
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#btn-adicionar:hover {
-    background-color: #0056b3;
-}
-
-.viewport {
-  --b: 5px;   /* thickness of the border */
-  --c: rgb(184, 187, 157);   /* color of the border */
-  --w: 20px;  /* width of border */
-  
-
-  padding: var(--b);
-  
-  position:relative;
-  width:200px;
-  height:100px;
-  box-sizing:border-box;
-  margin:5px;
-  display:inline-flex;
-  font-size:30px;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-}
-
-.viewport::before {
-  content :"";
-  position: absolute;
-  inset: 0;
-  background: var(--c,red);
-  --_g: #0000 90deg,#000 0;
-  --_p: var(--w) var(--w) no-repeat;
-  --mask:
-    conic-gradient(from 90deg  at top    var(--b) left  var(--b),var(--_g)) 0    0    / var(--_p),
-    conic-gradient(from 180deg at top    var(--b) right var(--b),var(--_g)) 100% 0    / var(--_p),
-    conic-gradient(from 0deg   at bottom var(--b) left  var(--b),var(--_g)) 0    100% / var(--_p),
-    conic-gradient(from -90deg at bottom var(--b) right var(--b),var(--_g)) 100% 100% / var(--_p);
-    -webkit-mask: var(--mask);
-            mask: var(--mask);
+        const data = await response.json();
+        const nomeProduto = data.description || 'Descrição não disponível';
+        
+        nomeProdutoEl.textContent = nomeProduto; // Atualiza o texto abaixo do scanner
+        
+        // ********* 🚀 NOVO: Abrir o modal com o nome do produto *********
+        abrirModal(nomeProduto, ean);
+        
+    } catch (error) {
+        console.error("Erro na busca da API:", error);
+        nomeProdutoEl.textContent = 'Falha ao conectar com o serviço de produtos.';
+    }
 }
