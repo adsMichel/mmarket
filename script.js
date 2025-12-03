@@ -20,7 +20,6 @@ let codigoEncontrado = null;
 
 // Elementos do DOM
 const btnScanner = document.getElementById('btn-iniciar-scanner');
-const codigoLidoEl = document.getElementById('codigo-lido');
 const nomeProdutoEl = document.getElementById('nome-produto');
 const modal = document.getElementById('product-modal');
 const closeModalBtn = document.querySelector('.close-button');
@@ -55,7 +54,6 @@ function iniciarScanner() {
     // Atualiza o estado do botão
     btnScanner.textContent = 'Procurando...';
     btnScanner.disabled = true; // Desabilita o botão enquanto a câmera está aberta
-    codigoLidoEl.textContent = 'Aguardando leitura...';
     nomeProdutoEl.textContent = 'Aguardando leitura...';
 
 
@@ -78,7 +76,6 @@ Quagga.onDetected(function(data) {
     
     if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
         codigoEncontrado = codigo;
-        codigoLidoEl.textContent = codigo;
         
         // ********* 🛑 Ação Principal: Parar a câmera após a leitura *********
         pararScanner();
@@ -115,7 +112,6 @@ Quagga.onDetected(function(data) {
     
     if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
         codigoEncontrado = codigo;
-        codigoLidoEl.textContent = codigo;
         
         // Parar a câmera após a leitura
         pararScanner();
