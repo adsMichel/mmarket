@@ -151,8 +151,8 @@ main {
   padding: var(--b);
   
   position:relative;
-  width:200px;
-  height:100px;
+  width:300px;
+  height:300px;
   box-sizing:border-box;
   margin:5px;
   display:inline-flex;
