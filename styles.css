@@ -142,7 +142,7 @@ strong {
     background-color: #0056b3;
 }
 
-.viewport {
+main {
   --b: 5px;   /* thickness of the border */
   --c: rgb(184, 187, 157);   /* color of the border */
   --w: 20px;  /* width of border */
@@ -162,7 +162,7 @@ strong {
   text-align:center;
 }
 
-.viewport::before {
+main::before {
   content :"";
   position: absolute;
   inset: 0;
