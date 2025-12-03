@@ -7,9 +7,19 @@ body {
 }
 
 header {
-    background-color: #333;
+    background-color: #909cc4;
     color: white;
     padding: 2px 0;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+main button {
+    margin-top: 100px;
 }
 
 /* Estilo para a área de visualização da câmera (obrigatório para QuaggaJS) */
@@ -18,10 +28,8 @@ header {
     width: 100%;
     max-width: 300px;
     margin: 20px auto;
-    /* Adaptação para mobile: garantir que o vídeo ocupe o espaço */
     height: 180px; 
     overflow: hidden;
-    /* border: 3px solid #007bff; */
 }
 
 #interactive.viewport canvas, #interactive.viewport video {
