@@ -24,7 +24,7 @@ main button {
 
 /* Estilo para a área de visualização da câmera (obrigatório para QuaggaJS) */
 #interactive.viewport {
-    position: absolute;
+    position: relative;
     width: 100%;
     max-width: 300px;
     margin: 20px auto;
