@@ -85,7 +85,7 @@ strong {
     width: 100%; 
     height: 100%;
     overflow: auto; 
-    background-color: rgba(0,0,0,0.4); /* Fundo preto semi-transparente */
+    background-color: rgba(0,0,0,0.4);
 }
 
 .modal-content {
@@ -121,6 +121,7 @@ strong {
     display: block;
     width: 100%;
     margin-top: 10px;
+    font-size: large;
 }
 
 .modal-content input {
@@ -133,6 +134,7 @@ strong {
 #btn-adicionar {
     background-color: #007bff; /* Azul */
     color: white;
+    margin-top: 50px;
     padding: 10px;
     border: none;
     border-radius: 5px;
