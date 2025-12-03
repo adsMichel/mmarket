@@ -141,39 +141,3 @@ strong {
 #btn-adicionar:hover {
     background-color: #0056b3;
 }
-
-main {
-  --b: 5px;   /* thickness of the border */
-  --c: rgb(184, 187, 157);   /* color of the border */
-  --w: 20px;  /* width of border */
-  
-
-  padding: var(--b);
-  
-  position:relative;
-  width:300px;
-  height:300px;
-  box-sizing:border-box;
-  margin:5px;
-  display:inline-flex;
-  font-size:30px;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-}
-
-main::before {
-  content :"";
-  position: absolute;
-  inset: 0;
-  background: var(--c,red);
-  --_g: #0000 90deg,#000 0;
-  --_p: var(--w) var(--w) no-repeat;
-  --mask:
-    conic-gradient(from 90deg  at top    var(--b) left  var(--b),var(--_g)) 0    0    / var(--_p),
-    conic-gradient(from 180deg at top    var(--b) right var(--b),var(--_g)) 100% 0    / var(--_p),
-    conic-gradient(from 0deg   at bottom var(--b) left  var(--b),var(--_g)) 0    100% / var(--_p),
-    conic-gradient(from -90deg at bottom var(--b) right var(--b),var(--_g)) 100% 100% / var(--_p);
-    -webkit-mask: var(--mask);
-            mask: var(--mask);
-}
