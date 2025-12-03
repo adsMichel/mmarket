@@ -133,7 +133,7 @@ function abrirModal(nome, ean) {
     modalProductName.textContent = nome;
 
     // Opcional: Limpar/Resetar os inputs a cada abertura
-    inputQuantidade.value = 0;
+    inputQuantidade.value = '';
     inputValor.value = '';
 
     modal.style.display = 'block';
