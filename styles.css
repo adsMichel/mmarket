@@ -9,19 +9,19 @@ body {
 header {
     background-color: #333;
     color: white;
-    padding: 10px 0;
+    padding: 2px 0;
 }
 
 /* Estilo para a área de visualização da câmera (obrigatório para QuaggaJS) */
 #interactive.viewport {
     position: relative;
     width: 100%;
-    max-width: 400px; /* Limite a largura para melhor visualização em desktop */
+    max-width: 300px;
     margin: 20px auto;
     /* Adaptação para mobile: garantir que o vídeo ocupe o espaço */
-    height: 300px; 
+    height: 180px; 
     overflow: hidden;
-    border: 3px solid #007bff;
+    /* border: 3px solid #007bff; */
 }
 
 #interactive.viewport canvas, #interactive.viewport video {
@@ -46,8 +46,8 @@ strong {
 #btn-iniciar-scanner {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #28a745; /* Verde */
-    color: white;
+    background-color: rgb(184, 187, 157);
+    color: black;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -56,7 +56,7 @@ strong {
 }
 
 #btn-iniciar-scanner:hover {
-    background-color: #218838;
+    background-color: rgb(176, 182, 119);
 }
 
 #btn-iniciar-scanner:disabled {
@@ -132,4 +132,40 @@ strong {
 
 #btn-adicionar:hover {
     background-color: #0056b3;
+}
+
+.viewport {
+  --b: 5px;   /* thickness of the border */
+  --c: rgb(184, 187, 157);   /* color of the border */
+  --w: 20px;  /* width of border */
+  
+
+  padding: var(--b);
+  
+  position:relative;
+  width:200px;
+  height:100px;
+  box-sizing:border-box;
+  margin:5px;
+  display:inline-flex;
+  font-size:30px;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.viewport::before {
+  content :"";
+  position: absolute;
+  inset: 0;
+  background: var(--c,red);
+  --_g: #0000 90deg,#000 0;
+  --_p: var(--w) var(--w) no-repeat;
+  --mask:
+    conic-gradient(from 90deg  at top    var(--b) left  var(--b),var(--_g)) 0    0    / var(--_p),
+    conic-gradient(from 180deg at top    var(--b) right var(--b),var(--_g)) 100% 0    / var(--_p),
+    conic-gradient(from 0deg   at bottom var(--b) left  var(--b),var(--_g)) 0    100% / var(--_p),
+    conic-gradient(from -90deg at bottom var(--b) right var(--b),var(--_g)) 100% 100% / var(--_p);
+    -webkit-mask: var(--mask);
+            mask: var(--mask);
 }
