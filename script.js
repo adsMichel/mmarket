@@ -48,6 +48,8 @@ function formatarValor(valor) {
 // Listener para formatar o valor enquanto o usuário digita
 inputValor.addEventListener('input', function (event) {
     let valor = inputValor.value;
+
+    // Remove tudo que não for dígito.
     valor = valor.replace(/\D/g, '');
 
     if (valor.length === 0) {
@@ -55,8 +57,10 @@ inputValor.addEventListener('input', function (event) {
         return;
     }
 
+    // Converte os dígitos para o valor em centavos
     const valorNumerico = parseInt(valor) / 100;
-    
+
+    // Aplica a formatação monetária (com vírgula)
     inputValor.value = valorNumerico.toLocaleString('pt-BR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
