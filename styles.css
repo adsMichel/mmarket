@@ -16,7 +16,6 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    border: 2px solid rgb(184, 187, 157);
 }
 
 main button {
@@ -31,6 +30,7 @@ main button {
     margin: 20px auto;
     height: 300px; 
     overflow: hidden;
+    border: 2px solid rgb(184, 187, 157);
 }
 
 #interactive.viewport canvas, #interactive.viewport video {
