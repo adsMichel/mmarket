@@ -28,46 +28,6 @@ const inputQuantidade = document.getElementById('input-quantidade');
 const inputValor = document.getElementById('input-valor');
 const btnAdicionar = document.getElementById('btn-adicionar');
 
-// Função de formatação para o padrão monetário brasileiro
-function formatarValor(valor) {
-    // Tenta converter o valor (string) para float, tratando vírgulas como decimais
-    const numero = parseFloat(String(valor).replace('.', '').replace(',', '.'));
-
-    // Se não for um número válido, retorna vazio ou '0.00'
-    if (isNaN(numero)) {
-        return '';
-    }
-
-    // Usa Intl.NumberFormat para formatar no padrão BRL (R$ 1.234,56)
-    return numero.toLocaleString('pt-BR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-}
-
-// Listener para formatar o valor enquanto o usuário digita
-inputValor.addEventListener('input', function (event) {
-    let valor = inputValor.value;
-
-    // Remove tudo que não for dígito.
-    valor = valor.replace(/\D/g, '');
-
-    if (valor.length === 0) {
-        inputValor.value = '';
-        return;
-    }
-
-    // Converte os dígitos para o valor em centavos
-    const valorNumerico = parseInt(valor) / 100;
-
-    // Aplica a formatação monetária (com vírgula)
-    inputValor.value = valorNumerico.toLocaleString('pt-BR', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-});
-
-
 // --- 1. FUNÇÕES DE CONTROLE DO SCANNER ---
 
 function pararScanner() {
