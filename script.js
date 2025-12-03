@@ -48,23 +48,15 @@ function formatarValor(valor) {
 // Listener para formatar o valor enquanto o usuário digita
 inputValor.addEventListener('input', function (event) {
     let valor = inputValor.value;
-
-    // 1. Limpa o valor removendo tudo que não for dígito (0-9)
-    // Isso evita problemas de formatação enquanto o usuário digita
     valor = valor.replace(/\D/g, '');
 
-    // 2. Se não houver dígitos, limpa o campo e sai
     if (valor.length === 0) {
         inputValor.value = '';
         return;
     }
 
-    // 3. Converte para o formato de centavos (ex: "12345" vira 123.45)
-    // Divide por 100 para obter as duas casas decimais
     const valorNumerico = parseInt(valor) / 100;
-
-    // 4. Aplica a formatação e preenche o input.
-    // Usamos toLocaleString para garantir a vírgula como separador decimal.
+    
     inputValor.value = valorNumerico.toLocaleString('pt-BR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
