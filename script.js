@@ -82,7 +82,7 @@ function iniciarScanner() {
         Quagga.start();
         scannerEmFuncionamento = true;
         console.log("Scanner QuaggaJS iniciado.");
-        btnScanner.textContent = 'PARAR'; // Pode mudar o texto para indicar que está ativo
+        btnScanner.textContent = 'PARAR';
     });
 }
 
@@ -144,9 +144,6 @@ function fecharModal() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicializa o scanner automaticamente ao carregar a página
-    iniciarScanner(); 
-
     // O botão agora serve para PARAR/REINICIAR o scanner
     btnScanner.addEventListener('click', () => {
         if (scannerEmFuncionamento) {
