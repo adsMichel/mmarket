@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Marry Market</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 
@@ -14,14 +15,14 @@
         margin: 0;
         padding-bottom: 5rem; /* Compensa a altura do footer fixo */
         min-height: 100vh;
-        background-image: url('mary2.jpeg'); 
+        background-image: url("mary2.jpeg");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
       }
 
       #main-content {
-          background-color: rgba(0, 0, 0, 0.5); 
+        background-color: rgba(0, 0, 0, 0.5);
       }
 
       #fixed-header {
@@ -39,7 +40,7 @@
       /* Define a cor de seleção (active/hover) dos ícones */
       .nav-item:hover,
       .nav-item.active {
-        color: rgb(184, 187, 157); 
+        color: rgb(184, 187, 157);
       }
 
       /* Estilos para o scanner (mantidos) */
@@ -47,94 +48,133 @@
         width: 16rem; /* w-64 */
         height: 16rem; /* h-64 */
       }
+      
+      /* Oculta os elementos de vídeo/canvas se o scanner não estiver ativo (opcional, o Quagga já faz o gerenciamento de elementos) */
+      #interactive video, #interactive canvas {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+      }
 
       /* --- Estilos do Modal --- */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-  
-}
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 100; /* Z-index alto para ficar sobre tudo */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7); /* Fundo mais escuro */
+      }
 
-.modal-content {
-  background-color: #fafafa;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 400px;
-  border-radius: 10px;
-  position: relative;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
+      .modal-content {
+        background-color: #fafafa;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 400px;
+        border-radius: 10px;
+        position: relative;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
 
-.close-button {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
+      .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
 
-.close-button:hover,
-.close-button:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
+      .close-button:hover,
+      .close-button:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
 
-/* Estilos para inputs e botão dentro do modal */
-.modal-content label,
-.modal-content input,
-.modal-content button {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  font-size: large;
-}
+      /* Estilos para inputs e botão dentro do modal */
+      .modal-content label,
+      .modal-content input,
+      .modal-content button {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        font-size: large;
+      }
 
-.modal-content input {
-  padding: 8px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+      .modal-content input {
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
     </style>
   </head>
 
   <body>
-    <header id="fixed-header" class="fixed top-0 left-0 w-full z-50 flex items-center justify-center border-b border-gray-700">
+    <header
+      id="fixed-header"
+      class="fixed top-0 left-0 w-full z-50 flex items-center justify-center border-b border-gray-200"
+    >
       <div class="text-white flex flex-col items-center leading-none">
-        <h2 class="text-xs font-semibold text-gray-400 uppercase opacity-80">Valor Total</h2>
-        <p class="text-xl font-extrabold text-gray-500">
-          R$ 150,00
-        </p>
+        <h2 class="text-xs font-semibold text-gray-400 uppercase opacity-80">
+          Valor Total
+        </h2>
+        <p class="text-xl font-extrabold text-gray-500">R$ 150,00</p>
       </div>
     </header>
 
-    <main id="main-content" class="flex flex-col items-center justify-center min-h-screen w-full pt-[4rem] pb-20">
-      
-      <div id="interactive" class="relative flex items-center justify-center scanner-target mx-auto viewport">
+    <main
+      id="main-content"
+      class="flex flex-col items-center justify-center min-h-screen w-full pt-[4rem] pb-20"
+    >
+      <div
+        id="interactive"
+        class="relative flex items-center justify-center scanner-target mx-auto viewport"
+      >
         <div class="w-full h-full border-4 border-transparent">
-          <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4" style="border-color: rgb(184, 187, 157)"></div>
-          <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4" style="border-color: rgb(184, 187, 157)"></div>
-          <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4" style="border-color: rgb(184, 187, 157)"></div>
-          <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4" style="border-color: rgb(184, 187, 157)"></div>
+          <div
+            class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4"
+            style="border-color: rgb(184, 187, 157)"
+          ></div>
+          <div
+            class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4"
+            style="border-color: rgb(184, 187, 157)"
+          ></div>
+          <div
+            class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4"
+            style="border-color: rgb(184, 187, 157)"
+          ></div>
+          <div
+            class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4"
+            style="border-color: rgb(184, 187, 157)"
+          ></div>
         </div>
 
-        <div class="absolute w-full h-1 bg-red-500 animate-pulse transition duration-1000" style="top: 50%"></div>
+        <div
+          class="absolute w-full h-1 bg-red-500 animate-pulse transition duration-1000"
+          style="top: 50%"
+        ></div>
       </div>
+      
+      <div class="mt-4 p-4 text-center text-white bg-gray-800 rounded-lg max-w-sm mx-auto">
+          <p id="nome-produto" class="text-lg font-semibold">Pronto para escanear!</p>
+      </div>
+      </main>
 
-    </main>
-
-    <footer class="fixed bottom-0 left-0 w-full footer-nav bg-white border-t border-gray-200 shadow-xl z-50">
+    <footer
+      class="fixed bottom-0 left-0 w-full footer-nav bg-white border-t border-gray-200 shadow-xl z-50"
+    >
       <nav class="flex h-full justify-around items-center">
-        <button class="nav-item active flex flex-col items-center justify-center p-2 text-blue-700 transition duration-150 rounded-lg hover:bg-gray-100 w-1/3 h-full">
+        <button
+          class="nav-item active flex flex-col items-center justify-center p-2 text-blue-700 transition duration-150 rounded-lg hover:bg-gray-100 w-1/3 h-full"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -154,7 +194,8 @@
         </button>
 
         <button
-          class="nav-item flex flex-col items-center justify-center p-2 text-gray-500 transition duration-150 rounded-lg hover:bg-gray-100 w-1/3 h-full" id="btn-iniciar-scanner"
+          class="nav-item flex flex-col items-center justify-center p-2 text-gray-500 transition duration-150 rounded-lg hover:bg-gray-100 w-1/3 h-full"
+          id="btn-iniciar-scanner"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -200,9 +241,7 @@
 
             <circle cx="12" cy="7" r="4" />
           </svg>
-          <span class="text-xs mt-1 font-medium" id="btn-iniciar-scanner"
-            >Perfil</span
-          >
+          <span class="text-xs mt-1 font-medium">Perfil</span>
         </button>
       </nav>
     </footer>
@@ -216,14 +255,15 @@
         </p>
 
         <label for="input-quantidade">Quantidade:</label>
-        <input type="number" id="input-quantidade" value="0" min="0" />
+        <input type="number" id="input-quantidade" value="1" min="1" />
         <label for="input-valor">Valor Unitário (R$):</label>
         <input type="number" id="input-valor" placeholder="0.00" min="0" />
-        <button id="btn-adicionar">Adicionar</button>
+        <button id="btn-adicionar" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-4">
+            Adicionar
+        </button>
       </div>
     </div>
-
+    
     <script src="script.js"></script>
-
   </body>
 </html>
