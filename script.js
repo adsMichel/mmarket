@@ -40,19 +40,30 @@ const btnAdicionar = document.getElementById('btn-adicionar');
 function pararScanner() {
     if (!scannerEmFuncionamento) return;
 
+    // 1. Chamar a função de parada do Quagga
     Quagga.stop();
     scannerEmFuncionamento = false;
 
-    // Captura o valor de codigoEncontrado antes de resetá-lo
-    const codigoDetectado = codigoEncontrado; 
-    codigoEncontrado = null; // Reseta para permitir nova leitura após a pausa
+    // 2. FORÇAR A PARADA DO STREAM DE VÍDEO (Solução para o problema)
+    const video = interactive.querySelector('video');
+    if (video && video.srcObject) {
+        // Acessa o MediaStreamTrack e interrompe
+        video.srcObject.getTracks().forEach(track => {
+            track.stop();
+        });
+        video.srcObject = null; // Limpa a referência
+    }
 
-    // Atualiza o estado do botão
+    // 3. Captura o valor de codigoEncontrado antes de resetá-lo
+    const codigoDetectado = codigoEncontrado; 
+    codigoEncontrado = null; 
+
+    // 4. Limpa o conteúdo da div interactive, removendo o vídeo/canvas
+    interactive.innerHTML = ''; 
+    
+    // 5. Atualiza o estado da UI e abre o modal, se necessário
     btnScanner.textContent = 'SCAN (Reiniciar)';
     btnScanner.disabled = false;
-    
-    // Limpa o conteúdo da div interactive, removendo o vídeo/canvas
-    interactive.innerHTML = '';
     console.log("Scanner QuaggaJS parado.");
 
     if (!codigoDetectado) {
