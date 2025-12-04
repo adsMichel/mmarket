@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log(`Adicionado: EAN=${ean}, Produto=${nome}, Qtd=${quantidade}, Valor=${valor}`);
 
-        alert(`Produto adicionado!\n${nome} (Qtd: ${quantidade}, R$ ${valor})`);
+        alert(`Produto adicionado!\n${nome} (Qtd: ${quantidade}, R$ ${valor*quantidade})`);
         fecharModal();
     });
 });
