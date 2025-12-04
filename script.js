@@ -38,7 +38,7 @@ function pararScanner() {
     codigoEncontrado = null; // Reseta para permitir nova leitura
 
     // Atualiza o estado do botão
-    btnScanner.textContent = '📷 Ler Código';
+    btnScanner.textContent = 'SCAN';
     btnScanner.disabled = false;
 
     // Limpa a área de visualização, se necessário (o Quagga.stop() faz a maior parte)
@@ -143,10 +143,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const nome = modalProductName.textContent;
         const quantidade = inputQuantidade.value;
         const valor = inputValor.value;
+        let qtd = parseFloat(quantidade);
+        let preco = parseFloat(valor);
+        let total = qtd * preco;
+        const totalFormatado = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
 
         console.log(`Adicionado: EAN=${ean}, Produto=${nome}, Qtd=${quantidade}, Valor=${valor}`);
+        alert(`Produto adicionado!\n${nome} (Qtd: ${qtd}, Total: ${totalFormatado})`);
 
-        alert(`Produto adicionado!\n${nome} (Qtd: ${quantidade}, R$ ${valor*quantidade})`);
+        // alert(`Produto adicionado!\n${nome} (Qtd: ${quantidade}, R$ ${valor})`);
         fecharModal();
     });
 });
