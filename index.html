@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marry Market</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Marry Market</title>
+    <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
 
-  <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-  <link rel="stylesheet" href="styles.css" />
-</head>
+  <body>
+    
+    <main>
+      <header>
+        <h4>Marry Market 2.1</h4>
+      </header>
+      
+      <div id="interactive" class="viewport"></div>
+   
+      <div id="resultado">
+        <p>Produto: <strong id="nome-produto">Aguardando leitura...</strong></p>
+      </div>
+      
+      <button id="btn-iniciar-scanner">Ler Código</button>
+    </main>
 
-<body>
-  <header>
-    <h4>Marry Market 2.1</h4>
-  </header>
+    
 
-  <main>
-    <div id="interactive" class="viewport"></div>
+    <div id="product-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
 
-  </main>
-  <button id="btn-iniciar-scanner">Ler Código</button>
+        <p>
+          Item: <strong id="modal-product-name">Nome do Produto Aqui</strong>
+        </p>
 
-  <div id="resultado">
-    <p>Produto: <strong id="nome-produto">Aguardando leitura...</strong></p>
-  </div>
-
-  <div id="product-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-button">&times;</span>
-
-      <p>
-        Item: <strong id="modal-product-name">Nome do Produto Aqui</strong>
-      </p>
-
-      <label for="input-quantidade">Quantidade:</label>
-      <input type="number" id="input-quantidade" value="0" min="0" />
-      <label for="input-valor">Valor Unitário (R$):</label>
-      <input type="number" id="input-valor" placeholder="0.00" min="0" />
-      <button id="btn-adicionar">Adicionar à Lista</button>
+        <label for="input-quantidade">Quantidade:</label>
+        <input type="number" id="input-quantidade" value="0" min="0" />
+        <label for="input-valor">Valor Unitário (R$):</label>
+        <input type="number" id="input-valor" placeholder="0.00" min="0" />
+        <button id="btn-adicionar">Adicionar à Lista</button>
+      </div>
     </div>
-  </div>
 
-  <script src="script.js"></script>
-</body>
-
+    <script src="script.js"></script>
+  </body>
 </html>
