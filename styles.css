@@ -18,7 +18,7 @@ main {
   width: 100vw;
   min-height: 100vh;
   flex-direction: column;
-  justify-content: space-between; 
+  justify-content: space-between;
   background-image: url(mary2.jpg);
   background-repeat: no-repeat;
   background-size: cover;
@@ -32,15 +32,37 @@ main > * {
 }
 
 #btn-iniciar-scanner {
-  padding: 10px 20px;
-  font-size: 16px;
+  position: fixed; 
+  bottom: 20px;    
+  right: 20px;     
+  z-index: 1000;   
+
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; 
+
+  font-size: 12px;
+  
   background-color: rgb(184, 187, 157);
-  color: black;
+  color: rgb(241, 230, 230);
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#btn-iniciar-scanner:hover {
+  background-color: rgb(176, 182, 119);
+  transform: scale(1.05);
+}
+
+#btn-iniciar-scanner:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
 
 /* Estilo para a área de visualização da câmera (obrigatório para QuaggaJS) */
@@ -65,25 +87,33 @@ main > * {
 #resultado {
   margin: 20px;
   padding: 15px;
-  background-color: white;
+  background-color: rgba(82, 16, 16, 0.6);
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 strong {
-  color: #007bff;
+  color: #a7c8eb;
 }
 
 #btn-iniciar-scanner {
-  padding: 10px 20px;
-  font-size: 16px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  
+  /* Garante a centralização do texto com Flexbox */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; 
+
+  /* Estilos de fonte e cor */
+  font-size: 12px;
   background-color: rgb(184, 187, 157);
-  color: black;
+  color: white;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 20px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 #btn-iniciar-scanner:hover {
