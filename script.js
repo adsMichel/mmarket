@@ -43,6 +43,7 @@ function pararScanner(callback) {
   Quagga.stop(function () {
     console.log("Scanner QuaggaJS parado (callback executado).");
 
+<<<<<<< HEAD
     // 2. FORÇAR A PARADA DO STREAM DE VÍDEO
     // Isso é crucial e garantimos que é feito após o Quagga tentar parar
     const video = interactive.querySelector("video");
@@ -51,6 +52,36 @@ function pararScanner(callback) {
         track.stop();
       });
       video.srcObject = null;
+=======
+    // 1. Chamar a função de parada do Quagga
+    Quagga.stop();
+    scannerEmFuncionamento = false;
+
+    // 2. FORÇAR A PARADA DO STREAM DE VÍDEO (Solução para o problema)
+    const video = interactive.querySelector('video');
+    if (video && video.srcObject) {
+        // Acessa o MediaStreamTrack e interrompe
+        video.srcObject.getTracks().forEach(track => {
+            track.stop();
+        });
+        video.srcObject = null; // Limpa a referência
+    }
+
+    // 3. Captura o valor de codigoEncontrado antes de resetá-lo
+    const codigoDetectado = codigoEncontrado; 
+    codigoEncontrado = null; 
+
+    // 4. Limpa o conteúdo da div interactive, removendo o vídeo/canvas
+    interactive.innerHTML = ''; 
+    
+    // 5. Atualiza o estado da UI e abre o modal, se necessário
+    btnScanner.textContent = 'SCAN (Reiniciar)';
+    btnScanner.disabled = false;
+    console.log("Scanner QuaggaJS parado.");
+
+    if (!codigoDetectado) {
+        abrirModalManual();
+>>>>>>> db06370abcb10a06d204c7cf4e1dcc7ced4d957e
     }
 
     // 3. Captura o valor de codigoEncontrado antes de resetá-lo
