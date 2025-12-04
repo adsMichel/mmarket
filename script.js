@@ -37,16 +37,14 @@ const inputValor = document.getElementById('input-valor');
 const btnAdicionar = document.getElementById('btn-adicionar');
 
 
-// --- 1. FUNÇÕES DE CONTROLE DO SCANNER ---
-
-/**
- * Para o QuaggaJS e reseta o estado do scanner.
- */
 function pararScanner() {
     if (!scannerEmFuncionamento) return;
 
     Quagga.stop();
     scannerEmFuncionamento = false;
+
+    // Captura o valor de codigoEncontrado antes de resetá-lo
+    const codigoDetectado = codigoEncontrado; 
     codigoEncontrado = null; // Reseta para permitir nova leitura após a pausa
 
     // Atualiza o estado do botão
@@ -56,12 +54,14 @@ function pararScanner() {
     // Limpa o conteúdo da div interactive, removendo o vídeo/canvas
     interactive.innerHTML = '';
     console.log("Scanner QuaggaJS parado.");
+
+    if (!codigoDetectado) {
+        abrirModalManual();
+    }
 }
 
-/**
- * Inicializa e inicia o QuaggaJS, abrindo a câmera.
- */
 function iniciarScanner() {
+    // ... (Seu código da função iniciarScanner permanece o mesmo) ...
     if (scannerEmFuncionamento) return;
     
     // Resetar a div interactive antes de iniciar para evitar acúmulo de elementos
@@ -93,8 +93,7 @@ Quagga.onDetected(function (data) {
     // Garante que é um EAN-13 (13 dígitos) e que não é uma leitura repetida instantânea
     if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
         codigoEncontrado = codigo;
-
-        // ********* 🛑 Ação Principal: Parar a câmera após a leitura *********
+        
         pararScanner();
 
         // Chamada da função para buscar o produto na API
@@ -112,34 +111,31 @@ Quagga.onProcessed((result) => {
 });
 
 
-// --- 2. FUNÇÕES E EVENT LISTENERS DO MODAL ---
-
-/**
- * Abre o modal e preenche com os dados do produto.
- */
 function abrirModal(nome, ean) {
     modalProductName.textContent = nome;
 
     // Limpar/Resetar os inputs a cada abertura
-    inputQuantidade.value = 1; // Padrão 1
+    inputQuantidade.value = 1; 
     inputValor.value = '';
 
     modal.style.display = 'block';
 
-    // Foco na quantidade para facilitar a digitação
     inputQuantidade.focus();
 
-    // Armazena o EAN para uso posterior
+    // Armazena o EAN (pode ser "MANUAL" se for entrada manual)
     modal.dataset.ean = ean;
+    console.log(`Modal aberto para EAN: ${ean}`);
 }
 
-/**
- * Fecha o modal.
- */
+function abrirModalManual() {
+    // Usamos 'MANUAL' ou um código dummy para o EAN neste caso.
+    abrirModal("Inserir Produto Manualmente", "MANUAL"); 
+    nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
+}
+
 function fecharModal() {
     modal.style.display = 'none';
-    // Opcional: Reiniciar o scanner após fechar o modal
-    // iniciarScanner(); 
+    // Opcional: manter o texto como "Scanner Parado..."
 }
 
 
