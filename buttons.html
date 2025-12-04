@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Barra de Navegação Fixo para Celular</title>
+    <!-- Inclui o CDN do Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuração de tema personalizada para usar a fonte Inter -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        /* Adiciona padding na parte inferior do corpo para que o conteúdo não fique escondido pelo footer fixo */
+        padding-bottom: 5rem; /* 80px para compensar a altura do footer */
+      }
+      /* Define a cor de seleção (active/hover) dos ícones */
+      .nav-item:hover,
+      .nav-item.active {
+        color: #1e40af; /* Cor azul escura */
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Conteúdo Principal do Aplicativo -->
+    <main class="container mx-auto p-4 md:p-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">
+        Conteúdo Principal do Aplicativo
+      </h1>
+      <p class="text-gray-600 mb-4">
+        Este é o espaço onde o conteúdo da sua página web será exibido. A barra
+        de navegação (footer) está fixada na parte inferior para imitar o
+        comportamento de um aplicativo nativo.
+      </p>
+      <!-- Simula conteúdo longo para testar a rolagem -->
+      <div class="space-y-4">
+        <!-- Gera 30 parágrafos de conteúdo de exemplo -->
+        <!-- Use um loop simples se estivesse em um ambiente de desenvolvimento real -->
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <h3 class="font-semibold text-indigo-600">
+            Seção 1: Feed de Notícias
+          </h3>
+          <p class="text-sm text-gray-500">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <h3 class="font-semibold text-indigo-600">Seção 2: Mensagens</h3>
+          <p class="text-sm text-gray-500">
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+            nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur.
+          </p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <h3 class="font-semibold text-indigo-600">Seção 3: Configurações</h3>
+          <p class="text-sm text-gray-500">
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+            officia deserunt mollit anim id est laborum.
+          </p>
+        </div>
+        <!-- Repete conteúdo para garantir rolagem -->
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <p class="text-sm text-gray-500">Mais conteúdo...</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <p class="text-sm text-gray-500">Mais conteúdo...</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <p class="text-sm text-gray-500">Mais conteúdo...</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <p class="text-sm text-gray-500">Mais conteúdo...</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <p class="text-sm text-gray-500">Mais conteúdo...</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <p class="text-sm text-gray-500">Fim do conteúdo de rolagem.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer
+      class="fixed bottom-0 left-0 w-full h-20 bg-white border-t border-gray-200 shadow-xl z-50"
+    >
+      <!-- Flexbox para centralizar e distribuir os botões uniformemente -->
+      <nav class="flex h-full justify-around items-center">
+        <!-- Botão 1: Início -->
+        <button
+          class="nav-item active flex flex-col items-center justify-center p-2 text-blue-700 transition duration-150 rounded-lg hover:bg-gray-100 w-1/3 h-full"
+        >
+          <!-- Ícone SVG para Casa (Home) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          <span class="text-xs mt-1 font-medium">Início</span>
+        </button>
+
+        <!-- Botão 2: Buscar -->
+        <button
+          class="nav-item flex flex-col items-center justify-center p-2 text-gray-500 transition duration-150 rounded-lg hover:bg-gray-100 w-1/3 h-full"
+        >
+          <!-- Ícone SVG para Lupa (Search) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <rect width="5" height="5" x="3" y="3" rx="1" />
+            <rect width="5" height="5" x="16" y="3" rx="1" />
+            <rect width="5" height="5" x="3" y="16" rx="1" />
+            <path d="M21 16h-3a2 2 0 0 0-2 2v3" />
+            <path d="M21 21v0" />
+            <path d="M12 7v3a2 2 0 0 1-2 2H7" />
+            <path d="M16 7v3a2 2 0 0 0 2 2h3" />
+            <path d="M12 17v3a2 2 0 0 0 2 2h3" />
+            <path d="M12 12h.01" />
+          </svg>
+          <span class="text-xs mt-1 font-medium">Ler</span>
+        </button>
+
+        <!-- Botão 3: Perfil -->
+        <button
+          class="nav-item flex flex-col items-center justify-center p-2 text-gray-500 transition duration-150 rounded-lg hover:bg-gray-100 w-1/3 h-full"
+        >
+          <!-- Ícone SVG para Usuário (Profile) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-6 h-6"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <span class="text-xs mt-1 font-medium" id="btn-iniciar-scanner"
+            >Perfil</span
+          >
+        </button>
+      </nav>
+    </footer>
+  </body>
+</html>

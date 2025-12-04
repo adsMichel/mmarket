@@ -6,20 +6,14 @@ body {
   background-color: #f4f4f4;
 }
 
-header {
-  background-color: rgb(184, 187, 157);
-  color: white;
-  padding: 2px 0;
-  width: 100%;
-}
-
 main {
   display: flex;
   width: 100vw;
   min-height: 100vh;
   flex-direction: column;
   justify-content: space-between;
-  background-image: url(mary2.jpg);
+  /* background-color: #f4f4f4; */
+  background-image: url(mary3.jpeg);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -29,59 +23,6 @@ main {
 main > * {
   align-self: center;
   width: 90%;
-}
-
-#btn-iniciar-scanner {
-  position: fixed; 
-  bottom: 20px;    
-  right: 20px;     
-  z-index: 1000;   
-
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0; 
-
-  font-size: 12px;
-  
-  background-color: rgb(184, 187, 157);
-  color: rgb(241, 230, 230);
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-#btn-iniciar-scanner:hover {
-  background-color: rgb(176, 182, 119);
-  transform: scale(1.05);
-}
-
-#btn-iniciar-scanner:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-}
-
-/* Estilo para a área de visualização da câmera (obrigatório para QuaggaJS) */
-#interactive.viewport {
-  position: relative;
-  width: 90%; /* Ajuste para melhor encaixe no align-self */
-  max-width: 300px;
-  margin: 20px auto;
-  height: 300px;
-  overflow: hidden;
-  border: 2px solid rgba(184, 187, 157, 0.4);
-}
-
-#interactive.viewport canvas,
-#interactive.viewport video {
-  width: 100%;
-  height: 100%;
-  /* Garante que o vídeo preencha a div sem distorcer (em geral) */
-  object-fit: cover;
 }
 
 #resultado {
@@ -96,18 +37,35 @@ strong {
   color: #a7c8eb;
 }
 
-#btn-iniciar-scanner {
+/* Estilo para a área de visualização da câmera (obrigatório para QuaggaJS) */
+#interactive.viewport {
+  position: relative;
+  width: 90%; /* Ajuste para melhor encaixe no align-self */
+  max-width: 300px;
+  margin: 20px auto;
+  height: 300px;
+  overflow: hidden;
+  border: 2px solid rgba(184, 187, 157, 0.8);
+}
+
+#interactive.viewport canvas,
+#interactive.viewport video {
+  width: 100%;
+  height: 100%;
+  /* Garante que o vídeo preencha a div sem distorcer (em geral) */
+  object-fit: cover;
+}
+
+/* #btn-iniciar-scanner {
   width: 70px;
   height: 70px;
   border-radius: 50%;
   
-  /* Garante a centralização do texto com Flexbox */
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0; 
 
-  /* Estilos de fonte e cor */
   font-size: 12px;
   background-color: rgb(184, 187, 157);
   color: white;
@@ -123,7 +81,7 @@ strong {
 #btn-iniciar-scanner:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
-}
+} */
 
 /* ... (Seções anteriores do styles.css) ... */
 
