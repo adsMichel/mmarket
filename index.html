@@ -504,9 +504,9 @@
       function abrirProductModal(nome, ean) {
         modalProductName.textContent = nome;
         inputQuantidade.value = ""; 
-        inputQuantidade.focus();
         inputValor.value = ""; 
         productModal.classList.remove("hidden");
+        inputQuantidade.focus();
         productModal.dataset.ean = ean;
       }
 
