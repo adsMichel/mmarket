@@ -700,19 +700,12 @@
 
           // SUBSTITUIÇÃO DO ALERT NATIVO PELO SWEETALERT2
           Swal.fire({
-            title: "Produto Adicionado! ✨",
+            title: "Produto Adicionado! 💜",
             html: `**${nome}**<br>Total: ${totalFormatado}`,
-            // Usamos um ícone SVG de checkmark para o roxo
-            icon: 'success', 
-            iconColor: '#8B5CF6', // Roxo (purple-500 do Tailwind)
             showConfirmButton: false,
             timer: 2000,
             toast: true,
-            position: 'top-end',
-            customClass: {
-              container: 'sweet-alert-container',
-              popup: 'rounded-xl shadow-lg',
-            }
+            position: 'top-end'
           });
 
           fecharProductModal();
