@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Marry Market</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
@@ -696,9 +698,22 @@
 
           const totalFormatado = formatarMoeda(subtotal);
 
-          alert(
-            `Produto adicionado!\n${nome} (Qtd: ${qtd}, Total: ${totalFormatado})`
-          );
+          // SUBSTITUIÇÃO DO ALERT NATIVO PELO SWEETALERT2
+          Swal.fire({
+            title: "Produto Adicionado! ✨",
+            html: `**${nome}**<br>Total: ${totalFormatado}`,
+            // Usamos um ícone SVG de checkmark para o roxo
+            icon: 'success', 
+            iconColor: '#8B5CF6', // Roxo (purple-500 do Tailwind)
+            showConfirmButton: false,
+            timer: 2000,
+            toast: true,
+            position: 'top-end',
+            customClass: {
+              container: 'sweet-alert-container',
+              popup: 'rounded-xl shadow-lg',
+            }
+          });
 
           fecharProductModal();
           mostrarTela("home");
