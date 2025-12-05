@@ -118,9 +118,7 @@
       id="home-screen"
       class="h-full flex flex-col items-center justify-center p-6"
     >
-      <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4">
-        Aguardando código...
-      </div>
+      <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4"></div>
     </div>
 
     <div id="scanner-area" class="hidden fixed inset-0 w-full h-full">
@@ -545,7 +543,7 @@
 
           codigoEncontrado = null;
           interactive.innerHTML = "";
-          nomeProdutoEl.textContent = "Aguardando código...";
+          // nomeProdutoEl.textContent = "Aguardando código...";
 
           btnLer.querySelector("span").textContent = "Ler";
 
