@@ -344,14 +344,16 @@
           type: "LiveStream",
           target: document.querySelector("#interactive"),
           constraints: {
+            width: 640,
+            height: 480,
             facingMode: "environment",
-            aspectRatio: { min: 1, max: 2 },
+            // aspectRatio: { min: 1, max: 2 },
           },
           area: {
-            top: "30%",
+            top: "20%",
             right: "20%",
             left: "20%",
-            bottom: "30%"
+            bottom: "20%"
           }
         },
         decoder: {
