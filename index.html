@@ -380,6 +380,7 @@
         if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
           codigoEncontrado = codigo;
           pararScanner();
+          mostrarTela("home");
           buscarProduto(codigo);
         }
       });
@@ -455,7 +456,6 @@
           );
 
           fecharModal();
-          mostrarTela("home");
         });
       });
 
