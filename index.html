@@ -92,36 +92,40 @@
         border-top: none;
         border-radius: 0 0 24px 0;
       }
+      
+      .total-header {
+        /* Fundo transparente com leve gradiente preto */
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 70%, transparent);
+      }
+      
+      .product-modal-container {
+        /* Container para a lista de produtos */
+        max-height: 80vh;
+        overflow-y: auto;
+      }
     </style>
   </head>
   <body class="h-screen overflow-hidden">
-    <!-- Tela Inicial (Home) -->
-    <div id="home-screen" class="h-full flex flex-col items-center justify-center p-6">
-      <!-- <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
-            <div class="mb-6">
-                <svg class="w-24 h-24 mx-auto text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">Scanner de Produtos</h1>
-            <p class="text-gray-600 mb-8">Escaneie códigos de barras para adicionar produtos</p>
-            <div id="nome-produto" class="text-lg text-gray-700 font-medium mb-4">Aguardando código...</div>
-        </div> -->
-        <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4"></div>
+    <header id="main-header" class="total-header p-3 fixed top-0 left-0 right-0 z-10">
+      <div class="max-w-md mx-auto text-center">
+        <p class="text-lg font-bold text-yellow-300">
+          Total: <span id="valor-total-header">R$ 0,00</span>
+        </p>
+      </div>
+    </header>
+
+    <div
+      id="home-screen"
+      class="h-full flex flex-col items-center justify-center p-6"
+    >
+      <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4">
+        Aguardando código...
+      </div>
     </div>
 
-    <!-- Área do Scanner -->
     <div id="scanner-area" class="hidden fixed inset-0 w-full h-full">
-      <!-- Cabeçalho -->
-      <div
-        class="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/60 to-transparent p-4"
-      >
-      </div>
-
-      <!-- Área da câmera -->
       <div id="interactive" class="w-full h-full bg-gray-900"></div>
 
-      <!-- Overlay do Scanner -->
       <div class="scanner-overlay">
         <div class="corner corner-tl"></div>
         <div class="corner corner-tr"></div>
@@ -129,15 +133,12 @@
         <div class="corner corner-br"></div>
         <div class="scanner-line"></div>
       </div>
-
     </div>
 
-    <!-- Botões Inferiores (sempre visíveis) -->
     <div
       class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-6"
     >
       <div class="flex justify-around items-end px-8 max-w-md mx-auto">
-        <!-- Botão Início (antes era Histórico) -->
         <button
           id="btn-home"
           class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
@@ -159,9 +160,8 @@
               />
             </svg>
           </div>
-          <span class="text-xs font-medium">Início</span>
+          <span class="text-xs font-medium">Lista</span>
         </button>
-        <!-- Botão Ler (Principal) -->
         <button id="btn-ler" class="flex flex-col items-center gap-2 -mt-4">
           <div
             class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/50 hover:scale-105 transition transform"
@@ -183,7 +183,6 @@
           <span class="text-white text-xs font-medium">Ler</span>
         </button>
 
-        <!-- Botão inicio -->
         <button
           class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
         >
@@ -191,73 +190,151 @@
             class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
           >
             <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="w-6 h-6"
-          >
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
 
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+              <circle cx="12" cy="7" r="4" />
+            </svg>
           </div>
           <span class="text-xs font-medium">Perfil</span>
         </button>
       </div>
     </div>
 
-<div id="product-modal" class=" fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
-        <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
-            <div class="flex justify-end mb-2">
-                <button class="close-button text-gray-400 hover:text-gray-600 transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="mb-4">
-                <div class="bg-purple-50 rounded-xl p-2 mb-4">
-                    <p id="modal-product-name" class="text-purple-900 font-medium text-center">Nome do Produto</p>
-                </div>
-                
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
-                        <input 
-                            type="number" 
-                            id="input-quantidade" 
-                            value="0" 
-                            min="0"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
-                        >
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
-                        <input 
-                            type="number" 
-                            id="input-valor" 
-                            placeholder="0,00" 
-                            min="0" 
-                            step="0.01"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
-                        >
-                    </div>
-                </div>
-            </div>
-            
-            <button id="btn-adicionar" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition shadow-lg shadow-purple-500/30">
-                Adicionar Produto
-            </button>
+    <div
+      id="product-modal"
+      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center"
+    >
+      <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
+        <div class="flex justify-end mb-2">
+          <button
+            class="close-button text-gray-400 hover:text-gray-600 transition"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+
+        <div class="mb-4">
+          <div class="bg-purple-50 rounded-xl p-2 mb-4">
+            <p
+              id="modal-product-name"
+              class="text-purple-900 font-medium text-center"
+            >
+              Nome do Produto
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Quantidade</label
+              >
+              <input
+                type="number"
+                id="input-quantidade"
+                value="1"
+                min="1"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Valor (R$)</label
+              >
+              <input
+                type="number"
+                id="input-valor"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          id="btn-adicionar"
+          class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition shadow-lg shadow-purple-500/30"
+        >
+          Adicionar Produto
+        </button>
+      </div>
     </div>
+    
+    <div
+      id="list-modal"
+      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center"
+    >
+      <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-gray-800">Lista de Compras</h2>
+          <button
+            class="close-list-button text-gray-400 hover:text-gray-600 transition"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        
+        <ul id="lista-produtos" class="space-y-3 mb-4">
+          <li
+            id="lista-vazia-mensagem"
+            class="bg-gray-100 p-4 rounded-xl shadow-inner text-center text-gray-500"
+          >
+            A lista está vazia. Comece a escanear!
+          </li>
+        </ul>
+        
+        <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+             <span class="text-lg font-bold text-gray-800">Total:</span>
+             <span id="valor-total-modal" class="text-2xl font-extrabold text-purple-600">R$ 0,00</span>
+        </div>
+        
+        <button 
+            id="btn-limpar-lista" 
+            class="mt-4 w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition disabled:opacity-50"
+            disabled
+        >
+            Limpar Lista
+        </button>
+      </div>
+    </div>
+
 
     <script>
       // Configuração do QuaggaJS
@@ -292,22 +369,127 @@
       const homeScreen = document.getElementById("home-screen");
       const scannerArea = document.getElementById("scanner-area");
       const btnLer = document.getElementById("btn-ler");
-      const btnHome = document.getElementById("btn-home");
+      const btnHome = document.getElementById("btn-home"); // Botão "Lista"
       const nomeProdutoEl = document.getElementById("nome-produto");
 
-      // Elementos do DOM
+      // Elementos do DOM do Modal de Inserção
       const interactive = document.getElementById("interactive");
-      const modal = document.getElementById("product-modal");
-      const closeModalBtn = document.querySelector(".close-button");
+      const productModal = document.getElementById("product-modal");
+      const closeModalBtn = productModal.querySelector(".close-button");
       const modalProductName = document.getElementById("modal-product-name");
       const inputQuantidade = document.getElementById("input-quantidade");
       const inputValor = document.getElementById("input-valor");
       const btnAdicionar = document.getElementById("btn-adicionar");
+      
+      // Elementos do DOM do Modal da Lista (Novo)
+      const listModal = document.getElementById("list-modal");
+      const closeListModalBtn = listModal.querySelector(".close-list-button");
+      const listaProdutosEl = document.getElementById("lista-produtos");
+      const valorTotalHeaderEl = document.getElementById("valor-total-header"); // Header principal
+      const valorTotalModalEl = document.getElementById("valor-total-modal"); // Total no modal da lista
+      const listaVaziaMsg = document.getElementById("lista-vazia-mensagem");
+      const btnLimparLista = document.getElementById("btn-limpar-lista");
+
 
       let scannerEmFuncionamento = false;
       let codigoEncontrado = null;
+      
+      // Chave do localStorage
+      const STORAGE_KEY = 'listaDeProdutos';
 
-      // --- FUNÇÕES DE NAVEGAÇÃO ---
+      // --- FUNÇÕES DE ARMAZENAMENTO E CÁLCULO ---
+      
+      /** Carrega a lista de produtos do localStorage. */
+      function carregarLista() {
+          const listaJSON = localStorage.getItem(STORAGE_KEY);
+          return listaJSON ? JSON.parse(listaJSON) : [];
+      }
+      
+      /** Salva a lista de produtos no localStorage. */
+      function salvarLista(lista) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+          atualizarTotalELista(); // Garante que o total seja sempre atualizado após salvar
+      }
+      
+      /** Calcula o total de todos os produtos na lista. */
+      function calcularTotal(lista) {
+          return lista.reduce((soma, produto) => soma + produto.subtotal, 0);
+      }
+      
+      /** Formata um valor numérico para o padrão de moeda BRL (R$). */
+      function formatarMoeda(valor) {
+          return valor.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+          });
+      }
+
+      // --- FUNÇÕES DE RENDERIZAÇÃO E ATUALIZAÇÃO ---
+      
+      /** Renderiza a lista de produtos no modal e atualiza o total no header e no modal. */
+      function renderizarLista() {
+        const lista = carregarLista();
+        listaProdutosEl.innerHTML = "";
+        
+        if (lista.length === 0) {
+          listaProdutosEl.appendChild(listaVaziaMsg);
+          btnLimparLista.disabled = true;
+        } else {
+          btnLimparLista.disabled = false;
+          lista.forEach((produto, index) => {
+            const listItem = document.createElement("li");
+            listItem.className = "bg-gray-50 p-3 rounded-xl shadow-sm flex justify-between items-center border border-gray-200";
+            listItem.innerHTML = `
+              <div>
+                <p class="font-semibold text-gray-900">${produto.nome}</p>
+                <p class="text-xs text-gray-500">Qtd: ${produto.quantidade} x ${formatarMoeda(produto.valorUnitario)}</p>
+              </div>
+              <div class="text-right flex items-center gap-3">
+                <p class="font-bold text-base text-purple-600">${formatarMoeda(produto.subtotal)}</p>
+                <button data-index="${index}" class="btn-remover text-red-500 hover:text-red-700 transition">
+                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+              </div>
+            `;
+            listaProdutosEl.appendChild(listItem);
+          });
+          
+          // Adiciona listeners aos botões de remoção
+          document.querySelectorAll('.btn-remover').forEach(button => {
+              button.addEventListener('click', removerProduto);
+          });
+        }
+        
+        const total = calcularTotal(lista);
+        valorTotalHeaderEl.textContent = formatarMoeda(total);
+        valorTotalModalEl.textContent = formatarMoeda(total);
+      }
+
+      /** Atualiza os totais nas telas (Header e Modal). */
+      function atualizarTotalELista() {
+          renderizarLista();
+      }
+      
+      /** Remove um produto da lista pelo seu índice. */
+      function removerProduto(event) {
+          const index = parseInt(event.currentTarget.dataset.index);
+          let lista = carregarLista();
+          
+          if (index > -1 && index < lista.length) {
+              lista.splice(index, 1); // Remove 1 elemento no índice
+              salvarLista(lista);
+          }
+      }
+      
+      /** Limpa toda a lista de produtos. */
+      function limparLista() {
+           if (confirm("Tem certeza que deseja limpar toda a lista de compras?")) {
+               salvarLista([]);
+               alert("Lista limpa!");
+           }
+      }
+
+      // --- FUNÇÕES DE NAVEGAÇÃO E MODAIS ---
 
       function mostrarTela(tela) {
         homeScreen.classList.add("hidden");
@@ -321,14 +503,38 @@
         }
       }
 
+      function abrirProductModal(nome, ean) {
+        modalProductName.textContent = nome;
+        inputQuantidade.value = "1"; 
+        inputValor.value = ""; 
+        productModal.classList.remove("hidden");
+        inputValor.focus();
+        productModal.dataset.ean = ean;
+      }
+
+      function fecharProductModal() {
+        productModal.classList.add("hidden");
+        // Volta para a tela home se o modal for fechado (e não estiver no scanner)
+        if (scannerArea.classList.contains("hidden")) {
+            mostrarTela("home");
+        }
+      }
+      
+      function abrirListModal() {
+          renderizarLista(); // Renderiza a lista antes de abrir
+          listModal.classList.remove('hidden');
+      }
+      
+      function fecharListModal() {
+          listModal.classList.add('hidden');
+      }
+
       // --- FUNÇÕES DO SCANNER ---
 
       function pararScanner(callback) {
         if (!scannerEmFuncionamento) return;
 
         Quagga.stop(function () {
-          console.log("Scanner QuaggaJS parado (callback executado).");
-
           const video = interactive.querySelector("video");
           if (video && video.srcObject) {
             video.srcObject.getTracks().forEach((track) => {
@@ -337,16 +543,11 @@
             video.srcObject = null;
           }
 
-          const codigoDetectado = codigoEncontrado;
           codigoEncontrado = null;
           interactive.innerHTML = "";
           nomeProdutoEl.textContent = "Aguardando código...";
 
           btnLer.querySelector("span").textContent = "Ler";
-
-          if (!codigoDetectado) {
-            abrirModalManual();
-          }
 
           if (callback) callback();
         });
@@ -369,7 +570,6 @@
           }
           Quagga.start();
           scannerEmFuncionamento = true;
-          console.log("Scanner QuaggaJS iniciado.");
         });
       }
 
@@ -380,84 +580,15 @@
         if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
           codigoEncontrado = codigo;
           pararScanner();
-          mostrarTela("home");
+          mostrarTela("home"); // Volta para a tela home para mostrar o nome
           buscarProduto(codigo);
         }
       });
-
-      // --- FUNÇÕES DO MODAL ---
-
-      function abrirModal(nome, ean) {
-            modalProductName.textContent = nome;
-            inputQuantidade.value = "";
-            inputValor.value = "";
-            modal.classList.remove('hidden');
-            inputQuantidade.focus();
-            modal.dataset.ean = ean;
-            console.log(`Modal aberto para EAN: ${ean}`);
-        }
-
+      
       function abrirModalManual() {
-        abrirModal("Inserir Produto Manualmente", "MANUAL");
+        abrirProductModal("Inserir Produto Manualmente", "MANUAL");
         nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
       }
-
-      function fecharModal() {
-        modal.classList.add("hidden");
-        if (
-          !scannerEmFuncionamento &&
-          scannerArea.classList.contains("hidden")
-        ) {
-          mostrarTela("home");
-        }
-      }
-
-      // --- EVENT LISTENERS ---
-
-      document.addEventListener("DOMContentLoaded", () => {
-        btnLer.addEventListener("click", () => {
-          if (scannerEmFuncionamento) {
-            pararScanner();
-          } else {
-            iniciarScanner();
-          }
-        });
-
-        btnHome.addEventListener("click", () => {
-          mostrarTela("home");
-        });
-
-        closeModalBtn.addEventListener("click", fecharModal);
-
-        window.addEventListener("click", (event) => {
-          if (event.target == modal) {
-            fecharModal();
-          }
-        });
-
-        btnAdicionar.addEventListener("click", () => {
-          const ean = modal.dataset.ean;
-          const nome = modalProductName.textContent;
-          const quantidade = inputQuantidade.value;
-          const valor = inputValor.value;
-          let qtd = parseFloat(quantidade);
-          let preco = parseFloat(valor);
-          let total = qtd * preco;
-          const totalFormatado = total.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          });
-
-          console.log(
-            `Adicionado: EAN=${ean}, Produto=${nome}, Qtd=${qtd}, Valor=${preco}`
-          );
-          alert(
-            `Produto adicionado!\n${nome} (Qtd: ${qtd}, Total: ${totalFormatado})`
-          );
-
-          fecharModal();
-        });
-      });
 
       // --- FUNÇÃO DE BUSCA NA API DE PRODUTOS ---
 
@@ -489,7 +620,7 @@
             data.description || "Produto sem descrição (EAN: " + ean + ")";
 
           nomeProdutoEl.textContent = nomeProduto;
-          abrirModal(nomeProduto, ean);
+          abrirProductModal(nomeProduto, ean);
         } catch (error) {
           console.error("Erro na busca da API:", error);
           nomeProdutoEl.textContent =
@@ -497,6 +628,87 @@
           abrirModalManual();
         }
       }
+
+      // --- EVENT LISTENERS ---
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Inicializa o total no header
+        atualizarTotalELista();
+        
+        // Botão Ler
+        btnLer.addEventListener("click", () => {
+          if (scannerEmFuncionamento) {
+            pararScanner();
+          } else {
+            iniciarScanner();
+          }
+        });
+        
+        // Botão Início (Lista)
+        btnHome.addEventListener("click", abrirListModal);
+
+        // Fechar Modal de Inserção
+        closeModalBtn.addEventListener("click", fecharProductModal);
+        productModal.addEventListener("click", (event) => {
+          if (event.target === productModal) { fecharProductModal(); }
+        });
+        
+        // Fechar Modal da Lista
+        closeListModalBtn.addEventListener("click", fecharListModal);
+        listModal.addEventListener("click", (event) => {
+          if (event.target === listModal) { fecharListModal(); }
+        });
+        
+        // Limpar Lista
+        btnLimparLista.addEventListener('click', limparLista);
+
+        // Adicionar Produto
+        btnAdicionar.addEventListener("click", () => {
+          const ean = productModal.dataset.ean;
+          const nome = modalProductName.textContent;
+          const quantidade = inputQuantidade.value;
+          const valor = inputValor.value;
+          
+          let qtd = parseFloat(quantidade);
+          let preco = parseFloat(valor.replace(',', '.'));
+          
+          if (isNaN(qtd) || qtd <= 0) {
+              alert("Por favor, insira uma quantidade válida.");
+              return;
+          }
+          if (isNaN(preco) || preco < 0) {
+              alert("Por favor, insira um valor válido.");
+              return;
+          }
+
+          let subtotal = qtd * preco;
+          
+          const novoProduto = {
+              nome: nome,
+              quantidade: qtd,
+              valorUnitario: preco,
+              subtotal: subtotal,
+              ean: ean
+          };
+          
+          // Carrega, adiciona e salva
+          const listaAtual = carregarLista();
+          listaAtual.push(novoProduto);
+          salvarLista(listaAtual);
+
+          const totalFormatado = formatarMoeda(subtotal);
+
+          alert(
+            `Produto adicionado!\n${nome} (Qtd: ${qtd}, Total: ${totalFormatado})`
+          );
+
+          fecharProductModal();
+          mostrarTela("home");
+        });
+        
+        // Inicia na tela home
+        mostrarTela("home");
+      });
     </script>
   </body>
 </html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Compras</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-color: #f3f4f6; /* Fundo cinza claro */
+      }
+      .footer-bg {
+        background-color: #000000; /* Fundo preto para o rodapé */
+      }
+      .total-header {
+        background-color: #4f46e5; /* Cor discreta (índigo) para o total */
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <header id="total-header" class="total-header p-2 fixed top-0 left-0 right-0 z-10">
+      <div class="max-w-md mx-auto text-center">
+        <p class="text-sm font-semibold text-white">
+          Total da Lista: <span id="valor-total">R$ 0,00</span>
+        </p>
+      </div>
+    </header>
+
+    <main class="flex-grow pt-12 pb-24 p-4 max-w-md mx-auto w-full">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">🛒 Minha Lista</h1>
+
+      <ul id="lista-produtos" class="space-y-4">
+        <li
+          id="lista-vazia-mensagem"
+          class="bg-white p-4 rounded-xl shadow text-center text-gray-500"
+        >
+          A lista está vazia. Adicione produtos na tela de "Ler"!
+        </li>
+      </ul>
+      
+      <button 
+        id="btn-limpar-lista" 
+        class="mt-6 w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition disabled:opacity-50"
+        disabled
+      >
+        Limpar Lista
+      </button>
+    </main>
+
+    <div
+      class="fixed bottom-0 left-0 right-0 z-30 footer-bg pb-8 pt-6 shadow-2xl"
+    >
+      <div class="flex justify-around items-end px-8 max-w-md mx-auto">
+        <a
+          href="lista.html"
+          class="flex flex-col items-center gap-2 text-white hover:text-white transition"
+        >
+          <div
+            class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+          </div>
+          <span class="text-xs font-medium">Início</span>
+        </a>
+        <a href="index.html" class="flex flex-col items-center gap-2 -mt-4">
+          <div
+            class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/50 hover:scale-105 transition transform"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+              />
+            </svg>
+          </div>
+          <span class="text-white text-xs font-medium">Ler</span>
+        </a>
+
+        <a
+          href="#"
+          class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
+        >
+          <div
+            class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+          <span class="text-xs font-medium">Perfil</span>
+        </a>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_KEY = "listaDeProdutos";
+      const listaProdutosEl = document.getElementById("lista-produtos");
+      const valorTotalEl = document.getElementById("valor-total");
+      const listaVaziaMsg = document.getElementById("lista-vazia-mensagem");
+      const btnLimparLista = document.getElementById("btn-limpar-lista");
+
+      /**
+       * Carrega a lista de produtos do localStorage.
+       * @returns {Array} Lista de produtos ou um array vazio.
+       */
+      function carregarLista() {
+        const listaJSON = localStorage.getItem(STORAGE_KEY);
+        return listaJSON ? JSON.parse(listaJSON) : [];
+      }
+
+      /**
+       * Salva a lista de produtos no localStorage.
+       * @param {Array} lista - A lista de produtos a ser salva.
+       */
+      function salvarLista(lista) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+      }
+
+      /**
+       * Calcula o total de todos os produtos na lista.
+       * @param {Array} lista - A lista de produtos.
+       * @returns {number} O total da lista.
+       */
+      function calcularTotal(lista) {
+        return lista.reduce((soma, produto) => soma + produto.subtotal, 0);
+      }
+      
+      /**
+       * Formata um valor numérico para o padrão de moeda BRL (R$).
+       * @param {number} valor - O valor a ser formatado.
+       * @returns {string} O valor formatado como moeda.
+       */
+      function formatarMoeda(valor) {
+          return valor.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+          });
+      }
+
+      /**
+       * Renderiza a lista de produtos na tela.
+       * @param {Array} lista - A lista de produtos a ser exibida.
+       */
+      function renderizarLista(lista) {
+        listaProdutosEl.innerHTML = "";
+        
+        if (lista.length === 0) {
+          listaProdutosEl.appendChild(listaVaziaMsg);
+          valorTotalEl.textContent = formatarMoeda(0);
+          btnLimparLista.disabled = true;
+          return;
+        }
+        
+        // Remove a mensagem de lista vazia se houver itens
+        if(listaProdutosEl.contains(listaVaziaMsg)) {
+             listaProdutosEl.removeChild(listaVaziaMsg);
+        }
+        btnLimparLista.disabled = false;
+
+
+        lista.forEach((produto, index) => {
+          const listItem = document.createElement("li");
+          listItem.className = "bg-white p-4 rounded-xl shadow-md flex justify-between items-center";
+          listItem.innerHTML = `
+            <div>
+              <p class="font-semibold text-gray-900">${produto.nome}</p>
+              <p class="text-sm text-gray-600">Qtd: ${produto.quantidade} x ${formatarMoeda(produto.valorUnitario)}</p>
+            </div>
+            <div class="text-right">
+              <p class="font-bold text-lg text-purple-600">${formatarMoeda(produto.subtotal)}</p>
+              <button data-index="${index}" class="btn-remover text-red-500 text-xs hover:text-red-700 transition">Remover</button>
+            </div>
+          `;
+          listaProdutosEl.appendChild(listItem);
+        });
+
+        // Atualiza o total no cabeçalho
+        const total = calcularTotal(lista);
+        valorTotalEl.textContent = formatarMoeda(total);
+        
+        // Adiciona listeners aos botões de remoção
+        document.querySelectorAll('.btn-remover').forEach(button => {
+            button.addEventListener('click', removerProduto);
+        });
+      }
+      
+      /**
+       * Remove um produto da lista pelo seu índice.
+       * @param {Event} event - O evento de clique.
+       */
+      function removerProduto(event) {
+          const index = parseInt(event.target.dataset.index);
+          let lista = carregarLista();
+          
+          if (index > -1 && index < lista.length) {
+              lista.splice(index, 1); // Remove 1 elemento no índice
+              salvarLista(lista);
+              renderizarLista(lista); // Renderiza a lista atualizada
+          }
+      }
+      
+      /**
+       * Limpa toda a lista de produtos.
+       */
+      function limparLista() {
+           if (confirm("Tem certeza que deseja limpar toda a lista de compras?")) {
+               salvarLista([]);
+               renderizarLista([]);
+               alert("Lista limpa!");
+           }
+      }
+
+      // --- Inicialização ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const listaInicial = carregarLista();
+        renderizarLista(listaInicial);
+        
+        btnLimparLista.addEventListener('click', limparLista);
+      });
+    </script>
+  </body>
+</html>
