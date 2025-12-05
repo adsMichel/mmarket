@@ -1,34 +1,16 @@
-// Configurações do QuaggaJS (mantidas)
-const config = {
-  inputStream: {
-    name: "Live",
-    type: "LiveStream",
-    target: document.querySelector("#interactive"),
-    constraints: {
-      width: 640,
-      height: 480,
-      facingMode: "environment",
-    },
-  },
-  decoder: {
-    readers: ["ean_reader"],
-  },
-  locator: {
-    patchSize: "medium",
-    halfSample: true,
-  },
-  numOfWorkers: navigator.hardwareConcurrency || 4,
-  locate: true,
-};
+// Elementos de navegação e telas
+const homeScreen = document.getElementById("home-screen");
+const scannerArea = document.getElementById("scanner-area");
+const btnLer = document.getElementById("btn-ler"); // Novo ID para o botão "Ler"
+const btnHome = document.getElementById("btn-home"); // ID para o botão "Início"
+const nomeProdutoEl = document.getElementById("nome-produto");
 
-let scannerEmFuncionamento = false;
-let codigoEncontrado = null; // Armazena o último código para evitar leituras repetidas imediatas
+// ... (Resto das suas variáveis do DOM e a constante config) ...
 
 // Elementos do DOM
 const interactive = document.getElementById("interactive");
-// Corrigido o ID do botão de acordo com seu HTML (dentro do <footer>)
-const btnScanner = document.getElementById("btn-iniciar-scanner");
-const nomeProdutoEl = document.getElementById("nome-produto");
+// MANTEMOS btnScanner para o estado do scanner, mas a ação principal é do btnLer
+
 const modal = document.getElementById("product-modal");
 const closeModalBtn = document.querySelector(".close-button");
 const modalProductName = document.getElementById("modal-product-name");
@@ -36,15 +18,31 @@ const inputQuantidade = document.getElementById("input-quantidade");
 const inputValor = document.getElementById("input-valor");
 const btnAdicionar = document.getElementById("btn-adicionar");
 
+let scannerEmFuncionamento = false;
+let codigoEncontrado = null; 
+
+// --- FUNÇÕES DE NAVEGAÇÃO ---
+
+function mostrarTela(tela) {
+  homeScreen.classList.add("hidden");
+  scannerArea.classList.add("hidden");
+
+  if (tela === "home") {
+    homeScreen.classList.remove("hidden");
+    pararScanner(); // Garante que o scanner pare ao voltar para a home
+  } else if (tela === "scanner") {
+    scannerArea.classList.remove("hidden");
+  }
+}
+
+// --- FUNÇÕES DO SCANNER (AJUSTADAS) ---
+
 function pararScanner(callback) {
   if (!scannerEmFuncionamento) return;
 
-  // 1. Chamar a função de parada do Quagga com um callback.
   Quagga.stop(function () {
     console.log("Scanner QuaggaJS parado (callback executado).");
 
-    // 2. FORÇAR A PARADA DO STREAM DE VÍDEO
-    // Isso é crucial e garantimos que é feito após o Quagga tentar parar
     const video = interactive.querySelector("video");
     if (video && video.srcObject) {
       video.srcObject.getTracks().forEach((track) => {
@@ -53,52 +51,44 @@ function pararScanner(callback) {
       video.srcObject = null;
     }
 
-    // 3. Captura o valor de codigoEncontrado antes de resetá-lo
     const codigoDetectado = codigoEncontrado;
     codigoEncontrado = null;
-
-    // 4. Limpa o conteúdo da div interactive, removendo o vídeo/canvas
     interactive.innerHTML = "";
+    nomeProdutoEl.textContent = "Aguardando código...";
+    
+    // Atualiza o texto do botão "Ler" para refletir o estado
+    btnLer.querySelector('span').textContent = 'Ler';
 
-    // 5. Atualiza o estado da UI
-    btnScanner.textContent = "SCAN (Reiniciar)";
-    btnScanner.disabled = false;
-
-    // 6. Abrir o modal, se não houver código detectado
     if (!codigoDetectado) {
-      abrirModalManual();
+        // Se parou sem ler, mostre a área de input manual
+        abrirModalManual(); 
     }
 
     if (callback) callback();
   });
 
-  // Atualiza o estado da flag imediatamente
   scannerEmFuncionamento = false;
 }
 
 function iniciarScanner() {
-  // ... (iniciarScanner permanece igual) ...
   if (scannerEmFuncionamento) return;
 
-  // Resetar a div interactive antes de iniciar para evitar acúmulo de elementos
+  mostrarTela("scanner"); // Garante que a tela do scanner esteja visível
   interactive.innerHTML = "";
 
-  // Atualiza o estado da UI
-  btnScanner.textContent = "Procurando...";
-  btnScanner.disabled = true;
+  btnLer.querySelector('span').textContent = 'Parar'; // Mudar o texto do botão Ler
   nomeProdutoEl.textContent = "Aguardando leitura...";
 
   Quagga.init(config, function (err) {
     if (err) {
       console.error("Erro ao inicializar o Quagga:", err);
       alert("Erro ao iniciar a câmera! Verifique as permissões.");
-      pararScanner();
+      mostrarTela("home");
       return;
     }
     Quagga.start();
     scannerEmFuncionamento = true;
     console.log("Scanner QuaggaJS iniciado.");
-    btnScanner.textContent = "PARAR";
   });
 }
 
@@ -108,75 +98,78 @@ Quagga.onDetected(function (data) {
 
   if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
     codigoEncontrado = codigo;
-
-    // CHAMADA DO PARAR SCANNER sem callback, pois o fluxo continua com buscarProduto
-    pararScanner();
-
-    // Chamada da função para buscar o produto na API
+    pararScanner(); // Parar o scanner imediatamente
     buscarProduto(codigo);
   }
 });
 
-// Opcional: Desenho da caixa de detecção
+// Opcional: Desenho da caixa de detecção (mantido)
 Quagga.onProcessed((result) => {
   const drawingCtx = Quagga.canvas.ctx.overlay;
 
   if (result && result.box) {
     Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
-      color: "green",
+      color: "lime",
       lineWidth: 2,
     });
   }
 });
 
-function abrirModal(nome, ean) {
-  modalProductName.textContent = nome;
+// --- FUNÇÕES DO MODAL (MANTIDAS/AJUSTADAS) ---
 
-  // Limpar/Resetar os inputs a cada abertura
+function abrirModal(nome, ean) {
+  // ... (código para abrir modal mantido) ...
+  modalProductName.textContent = nome;
   inputQuantidade.value = 1;
   inputValor.value = "";
-
-  modal.style.display = "block";
-
+  modal.classList.remove('hidden'); // Usa classe Tailwind para mostrar
   inputQuantidade.focus();
-
-  // Armazena o EAN (pode ser "MANUAL" se for entrada manual)
   modal.dataset.ean = ean;
   console.log(`Modal aberto para EAN: ${ean}`);
 }
 
 function abrirModalManual() {
-  // Usamos 'MANUAL' ou um código dummy para o EAN neste caso.
   abrirModal("Inserir Produto Manualmente", "MANUAL");
   nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
 }
 
 function fecharModal() {
-  modal.style.display = "none";
-  // Opcional: manter o texto como "Scanner Parado..."
+  modal.classList.add('hidden'); // Usa classe Tailwind para esconder
+  // Ao fechar o modal, se não estiver no scanner, volta para a home
+  if (!scannerEmFuncionamento && scannerArea.classList.contains('hidden')) {
+      mostrarTela('home');
+  }
 }
 
+// --- EVENT LISTENERS ---
+
 document.addEventListener("DOMContentLoaded", () => {
-  // O botão agora serve para PARAR/REINICIAR o scanner
-  btnScanner.addEventListener("click", () => {
+  // 1. Ação do Botão "Ler" (btn-ler)
+  btnLer.addEventListener("click", () => {
     if (scannerEmFuncionamento) {
-      pararScanner();
+      pararScanner(); // Se estiver rodando, para e abre modal manual
     } else {
-      iniciarScanner();
+      iniciarScanner(); // Se estiver parado, inicia
     }
   });
 
-  // Fechar o modal ao clicar no 'x'
+  // 2. Ação do Botão "Início" (btn-home)
+  btnHome.addEventListener("click", () => {
+    mostrarTela("home");
+  });
+
+  // 3. Fechar o modal ao clicar no 'x'
   closeModalBtn.addEventListener("click", fecharModal);
 
-  // Fechar o modal ao clicar fora dele
+  // 4. Fechar o modal ao clicar fora dele
   window.addEventListener("click", (event) => {
-    if (event.target == modal) {
+    // Usamos a classe 'modal' para identificar o background do modal
+    if (event.target == modal) { 
       fecharModal();
     }
   });
 
-  // Ação do botão Adicionar
+  // 5. Ação do botão Adicionar (mantido)
   btnAdicionar.addEventListener("click", () => {
     const ean = modal.dataset.ean;
     const nome = modalProductName.textContent;
@@ -198,15 +191,18 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     fecharModal();
+    // Opcional: Reiniciar o scanner após adicionar o item
+    // iniciarScanner();
   });
 });
 
-// --- 3. FUNÇÃO DE BUSCA NA API DE PRODUTOS ---
+// --- FUNÇÃO DE BUSCA NA API DE PRODUTOS (MANTIDA) ---
 
 const API_KEY = "P7uKcTcma8P8GLzyw0ICeA";
 const COSMOS_API_URL = "https://api.cosmos.bluesoft.com.br/gtins/";
 
 async function buscarProduto(ean) {
+  // ... (código da função buscarProduto mantido) ...
   nomeProdutoEl.textContent = "Buscando dados do produto...";
 
   const url = `${COSMOS_API_URL}${ean}`;
@@ -221,9 +217,9 @@ async function buscarProduto(ean) {
     });
 
     if (!response.ok) {
-      // Se o código não for encontrado, reinicia o scanner para o usuário tentar novamente
       nomeProdutoEl.textContent = `Erro: ${response.status}. Produto não encontrado (${ean}).`;
-      iniciarScanner(); // Reinicia
+      // Não reiniciamos o scanner, apenas voltamos para a home após fechar o modal.
+      abrirModalManual(); 
       return;
     }
 
@@ -231,13 +227,11 @@ async function buscarProduto(ean) {
     const nomeProduto =
       data.description || "Produto sem descrição (EAN: " + ean + ")";
 
-    nomeProdutoEl.textContent = nomeProduto; // Atualiza o texto
-
-    // Abrir o modal com o nome do produto
+    nomeProdutoEl.textContent = nomeProduto;
     abrirModal(nomeProduto, ean);
   } catch (error) {
     console.error("Erro na busca da API:", error);
     nomeProdutoEl.textContent = "Falha ao conectar com o serviço de produtos.";
-    iniciarScanner(); // Reinicia em caso de falha de rede/API
+    abrirModalManual(); 
   }
 }
