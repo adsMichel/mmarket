@@ -547,7 +547,7 @@
           interactive.innerHTML = "";
           // nomeProdutoEl.textContent = "Aguardando código...";
 
-          btnLer.querySelector("span").textContent = "Ler";
+          btnLer.querySelector("span").textContent = "Parar";
 
           if (callback) callback();
         });
@@ -639,6 +639,7 @@
         btnLer.addEventListener("click", () => {
           if (scannerEmFuncionamento) {
             pararScanner();
+            mostrarTela("home");
           } else {
             iniciarScanner();
           }
