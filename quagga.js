@@ -13,7 +13,6 @@ const config = {
     readers: [
       "ean_reader",
       "ean_8_reader",
-      "code_128_reader",
       "code_39_reader",
     ],
     multiple: false,
