@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Marry Market</title>
+    <title>Marry Market v38</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css"
@@ -360,7 +360,6 @@
     <script>
       // Configuração do QuaggaJS (mantida)
       const config = {
-        // ... (configuração do QuaggaJS)
         inputStream: {
           name: "Live",
           type: "LiveStream",
@@ -370,19 +369,11 @@
             height: 480,
             facingMode: "environment",
           },
-          area: {
-            top: "20%",
-            right: "20%",
-            left: "20%",
-            bottom: "20%",
-          },
         },
         decoder: {
           readers: [
             "ean_reader",
             "ean_8_reader",
-            "code_128_reader",
-            "code_39_reader",
           ],
           multiple: false,
         },
