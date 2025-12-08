@@ -148,7 +148,17 @@
         <div class="scanner-line"></div>
       </div>
 
-      <button class="bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded">Digitar produto</button>
+      <div
+        id="manual-input-container"
+        class="hidden fixed bottom-40 left-0 right-0 z-50 text-center px-4"
+      >
+        <button
+          id="btn-manual"
+          class="bg-purple-600 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-purple-700 transition"
+        >
+          Inserir Manualmente
+        </button>
+      </div>
     </div>
 
     <div
@@ -373,10 +383,7 @@
           },
         },
         decoder: {
-          readers: [
-            "ean_reader",
-            "ean_8_reader",
-          ],
+          readers: ["ean_reader", "ean_8_reader"],
           multiple: false,
         },
         locate: true,
@@ -393,6 +400,10 @@
       const btnLer = document.getElementById("btn-ler");
       const btnHome = document.getElementById("btn-home");
       const nomeProdutoEl = document.getElementById("nome-produto");
+      const manualInputContainer = document.getElementById(
+        "manual-input-container"
+      );
+      const btnManual = document.getElementById("btn-manual");
 
       // Elementos do DOM do Modal de Inserção (mantidos)
       const interactive = document.getElementById("interactive");
@@ -414,6 +425,7 @@
 
       let scannerEmFuncionamento = false;
       let codigoEncontrado = null;
+      let timerEsperaLeitura;
 
       // Chave do localStorage para a lista de compras (mantida)
       const STORAGE_KEY = "listaDeProdutos";
@@ -623,6 +635,9 @@
 
       function pararScanner(callback) {
         if (!scannerEmFuncionamento) return;
+        clearTimeout(timerEsperaLeitura);
+        manualInputContainer.classList.add("hidden");
+
         // ... (lógica de Quagga.stop e tracks.stop)
         Quagga.stop(function () {
           const video = interactive.querySelector("video");
@@ -657,7 +672,23 @@
           }
           Quagga.start();
           scannerEmFuncionamento = true;
+          iniciarTimerManual();
         });
+      }
+
+      function iniciarTimerManual() {
+        // Define o tempo de espera em milissegundos (5 segundos)
+        const TEMPO_ESPERA_MS = 5000;
+
+        // Limpa qualquer timer anterior para garantir que só haja um ativo
+        clearTimeout(timerEsperaLeitura);
+
+        timerEsperaLeitura = setTimeout(() => {
+          // Se o scanner ainda estiver funcionando após 5 segundos, mostra o botão
+          if (scannerEmFuncionamento) {
+            manualInputContainer.classList.remove("hidden");
+          }
+        }, TEMPO_ESPERA_MS);
       }
 
       // Quando um código é detectado (mantida)
@@ -666,6 +697,8 @@
 
         if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
           codigoEncontrado = codigo;
+          clearTimeout(timerEsperaLeitura); 
+          manualInputContainer.classList.add("hidden");
           pararScanner();
           mostrarTela("home");
           buscarProduto(codigo);
@@ -796,6 +829,11 @@
 
           fecharProductModal();
           mostrarTela("home");
+        });
+
+        btnManual.addEventListener("click", () => {
+            pararScanner();
+            abrirModalManual();
         });
 
         mostrarTela("home");
