@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scanner de Produtos</title>
+    <title>Marry Market</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
@@ -92,36 +94,38 @@
         border-top: none;
         border-radius: 0 0 24px 0;
       }
+      
+      .total-header {
+        /* Fundo transparente com leve gradiente preto */
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 70%, transparent);
+      }
+      
+      .product-modal-container {
+        /* Container para a lista de produtos */
+        max-height: 80vh;
+        overflow-y: auto;
+      }
     </style>
   </head>
   <body class="h-screen overflow-hidden">
-    <!-- Tela Inicial (Home) -->
-    <div id="home-screen" class="h-full flex flex-col items-center justify-center p-6">
-      <!-- <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
-            <div class="mb-6">
-                <svg class="w-24 h-24 mx-auto text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-                </svg>
-            </div>
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">Scanner de Produtos</h1>
-            <p class="text-gray-600 mb-8">Escaneie códigos de barras para adicionar produtos</p>
-            <div id="nome-produto" class="text-lg text-gray-700 font-medium mb-4">Aguardando código...</div>
-        </div> -->
-        <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4"></div>
+    <header id="main-header" class="total-header p-3 fixed top-0 left-0 right-0 z-10">
+      <div class="max-w-md mx-auto text-center">
+        <p class="text-md font-semibold text-yellow-200">
+          TOTAL: <span id="valor-total-header">R$ 0,00</span>
+        </p>
+      </div>
+    </header>
+
+    <div
+      id="home-screen"
+      class="h-full flex flex-col items-center justify-center p-6"
+    >
+      <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4"></div>
     </div>
 
-    <!-- Área do Scanner -->
     <div id="scanner-area" class="hidden fixed inset-0 w-full h-full">
-      <!-- Cabeçalho -->
-      <div
-        class="absolute top-0 left-0 right-0 z-20 bg-gradient-to-b from-black/60 to-transparent p-4"
-      >
-      </div>
-
-      <!-- Área da câmera -->
       <div id="interactive" class="w-full h-full bg-gray-900"></div>
 
-      <!-- Overlay do Scanner -->
       <div class="scanner-overlay">
         <div class="corner corner-tl"></div>
         <div class="corner corner-tr"></div>
@@ -129,15 +133,12 @@
         <div class="corner corner-br"></div>
         <div class="scanner-line"></div>
       </div>
-
     </div>
 
-    <!-- Botões Inferiores (sempre visíveis) -->
     <div
       class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-6"
     >
       <div class="flex justify-around items-end px-8 max-w-md mx-auto">
-        <!-- Botão Início (antes era Histórico) -->
         <button
           id="btn-home"
           class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
@@ -159,9 +160,8 @@
               />
             </svg>
           </div>
-          <span class="text-xs font-medium">Início</span>
+          <span class="text-xs font-medium">Lista</span>
         </button>
-        <!-- Botão Ler (Principal) -->
         <button id="btn-ler" class="flex flex-col items-center gap-2 -mt-4">
           <div
             class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/50 hover:scale-105 transition transform"
@@ -183,7 +183,6 @@
           <span class="text-white text-xs font-medium">Ler</span>
         </button>
 
-        <!-- Botão inicio -->
         <button
           class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
         >
@@ -191,73 +190,151 @@
             class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
           >
             <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="w-6 h-6"
-          >
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
 
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+              <circle cx="12" cy="7" r="4" />
+            </svg>
           </div>
           <span class="text-xs font-medium">Perfil</span>
         </button>
       </div>
     </div>
 
-<div id="product-modal" class=" fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
-        <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
-            <div class="flex justify-end mb-2">
-                <button class="close-button text-gray-400 hover:text-gray-600 transition">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="mb-4">
-                <div class="bg-purple-50 rounded-xl p-2 mb-4">
-                    <p id="modal-product-name" class="text-purple-900 font-medium text-center">Nome do Produto</p>
-                </div>
-                
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
-                        <input 
-                            type="number" 
-                            id="input-quantidade" 
-                            value="0" 
-                            min="0"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
-                        >
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
-                        <input 
-                            type="number" 
-                            id="input-valor" 
-                            placeholder="0,00" 
-                            min="0" 
-                            step="0.01"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
-                        >
-                    </div>
-                </div>
-            </div>
-            
-            <button id="btn-adicionar" class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition shadow-lg shadow-purple-500/30">
-                Adicionar Produto
-            </button>
+    <div
+      id="product-modal"
+      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center"
+    >
+      <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
+        <div class="flex justify-end mb-2">
+          <button
+            class="close-button text-gray-400 hover:text-gray-600 transition"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+
+        <div class="mb-4">
+          <div class="bg-purple-50 rounded-xl p-2 mb-4">
+            <p
+              id="modal-product-name"
+              class="text-purple-900 font-medium text-center"
+            >
+              Nome do Produto
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Quantidade</label
+              >
+              <input
+                type="number"
+                id="input-quantidade"
+                value="1"
+                min="1"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Valor (R$)</label
+              >
+              <input
+                type="number"
+                id="input-valor"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
+              />
+            </div>
+          </div>
+        </div>
+
+        <button
+          id="btn-adicionar"
+          class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition shadow-lg shadow-purple-500/30"
+        >
+          Adicionar Produto
+        </button>
+      </div>
     </div>
+    
+    <div
+      id="list-modal"
+      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center"
+    >
+      <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-gray-800">Lista de Compras</h2>
+          <button
+            class="close-list-button text-gray-400 hover:text-gray-600 transition"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        
+        <ul id="lista-produtos" class="space-y-3 mb-4">
+          <li
+            id="lista-vazia-mensagem"
+            class="bg-gray-100 p-4 rounded-xl shadow-inner text-center text-gray-500"
+          >
+            A lista está vazia. Comece a escanear!
+          </li>
+        </ul>
+        
+        <div class="flex justify-between items-center pt-3 border-t border-gray-200">
+             <span class="text-lg font-bold text-gray-800">Total:</span>
+             <span id="valor-total-modal" class="text-2xl font-extrabold text-purple-600">R$ 0,00</span>
+        </div>
+        
+        <button 
+            id="btn-limpar-lista" 
+            class="mt-4 w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition disabled:opacity-50"
+            disabled
+        >
+            Limpar Lista
+        </button>
+      </div>
+    </div>
+
 
     <script>
       // Configuração do QuaggaJS
@@ -293,7 +370,7 @@
           patchSize: "medium",
           halfSample: true,
         },
-        frequency: **5**,
+        frequency: 10,
       };
 
       // Elementos de navegação e telas
@@ -647,6 +724,5 @@
         mostrarTela("home");
       });
     </script>
-
   </body>
 </html>
