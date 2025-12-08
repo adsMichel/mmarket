@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Marry Market v38</title>
+    <title>Marry Market</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css"
@@ -147,6 +147,8 @@
         <div class="corner corner-br"></div>
         <div class="scanner-line"></div>
       </div>
+
+      <button class="bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded">Digitar produto</button>
     </div>
 
     <div
@@ -577,7 +579,7 @@
           comparisonSpan.id = "price-comparison-span";
           comparisonSpan.className =
             "block text-xs font-semibold mt-1 text-purple-600";
-          comparisonSpan.textContent = `Preço anterior registrado: ${formatarMoeda(
+          comparisonSpan.textContent = `Preço da última compra: ${formatarMoeda(
             precoAnterior
           )}`;
 
