@@ -563,6 +563,10 @@
         }
       }
 
+      /** * Função MODIFICADA:
+       * 1. Verifica histórico.
+       * 2. Aplica cor roxa e mensagem se o EAN estiver no histórico.
+       */
       function abrirProductModal(nome, ean) {
         // Limpa classes e conteúdo anterior
         modalProductName.textContent = nome;
@@ -574,47 +578,37 @@
 
         // ------------------ Lógica de Histórico ------------------
         const historico = carregarHistorico();
-        const precoAnterior = historico[ean]; // Preço salvo do histórico
+        const precoAnterior = historico[ean];
 
         if (precoAnterior !== undefined) {
           // MODO: Produto Conhecido (Histórico Encontrado)
-          modalProductName.textContent = nome + " (Conhecido)";
+          modalProductName.textContent = nome;
           modalProductName.className =
             "text-white font-medium text-center bg-purple-600 rounded-lg p-1";
-
-          // Sugere o preço anterior no input para facilitar a inserção
-          inputValor.value = precoAnterior;
 
           // Cria o span de comparação de preço
           const comparisonSpan = document.createElement("span");
           comparisonSpan.id = "price-comparison-span";
           comparisonSpan.className =
-            "block text-xs font-semibold mt-1 text-purple-600 flex items-center gap-1";
-
-          // NOVO: Adiciona a lógica do ÍCONE DE CORAÇÃO
-          // O valor atual de comparação é o que está no campo (preenchido com o histórico)
-          const precoAtual = parseFloat(inputValor.value);
-
-          let prefixo = "";
-          if (precoAtual < precoAnterior) {
-            // 💜 Se o valor atual for menor que o anterior, adiciona o coração
-            prefixo = "💜 ";
-          }
-
-          comparisonSpan.innerHTML = `${prefixo} Preço anterior registrado: **${formatarMoeda(
+            "block text-xs font-semibold mt-1 text-purple-600";
+          comparisonSpan.textContent = `Preço da última compra: ${formatarMoeda(
             precoAnterior
-          )}**`;
+          )}`;
 
           // Insere o span abaixo do input de valor
           const valorDiv = document.getElementById("input-valor").parentNode;
           valorDiv.appendChild(comparisonSpan);
+
+          // Sugere o preço anterior no input para facilitar a inserção
+          inputValor.value = "";
         } else {
           // MODO: Produto Novo
+          // Limpa o campo de valor
           inputValor.value = "";
         }
         // ---------------------------------------------------------
 
-        inputQuantidade.value = "1";
+        inputQuantidade.value = ""; // Volta ao padrão
 
         productModal.classList.remove("hidden");
         inputQuantidade.focus();
@@ -703,7 +697,7 @@
 
         if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
           codigoEncontrado = codigo;
-          clearTimeout(timerEsperaLeitura);
+          clearTimeout(timerEsperaLeitura); 
           manualInputContainer.classList.add("hidden");
           pararScanner();
           mostrarTela("home");
@@ -838,8 +832,8 @@
         });
 
         btnManual.addEventListener("click", () => {
-          pararScanner();
-          abrirModalManual();
+            pararScanner();
+            abrirModalManual();
         });
 
         mostrarTela("home");
