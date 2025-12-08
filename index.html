@@ -697,7 +697,7 @@
 
         if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
           codigoEncontrado = codigo;
-          clearTimeout(timerEsperaLeitura); 
+          clearTimeout(timerEsperaLeitura);
           manualInputContainer.classList.add("hidden");
           pararScanner();
           mostrarTela("home");
@@ -706,7 +706,7 @@
       });
 
       function abrirModalManual() {
-        abrirProductModal("Inserir Produto Manualmente", "MANUAL");
+        abrirProductModal("Novo Produto", "MANUAL");
         nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
       }
 
