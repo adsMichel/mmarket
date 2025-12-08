@@ -579,7 +579,7 @@
 
         if (precoAnterior !== undefined) {
           // MODO: Produto Conhecido (Histórico Encontrado)
-          modalProductName.textContent = nome + " (Conhecido)";
+          modalProductName.textContent = nome;
           modalProductName.className =
             "text-white font-medium text-center bg-purple-600 rounded-lg p-1";
 
@@ -597,7 +597,7 @@
           valorDiv.appendChild(comparisonSpan);
 
           // Sugere o preço anterior no input para facilitar a inserção
-          inputValor.value = precoAnterior;
+          //inputValor.value = precoAnterior;
         } else {
           // MODO: Produto Novo
           // Limpa o campo de valor
@@ -605,7 +605,7 @@
         }
         // ---------------------------------------------------------
 
-        inputQuantidade.value = "1"; // Volta ao padrão
+        inputQuantidade.value = ""; // Volta ao padrão
 
         productModal.classList.remove("hidden");
         inputQuantidade.focus();
