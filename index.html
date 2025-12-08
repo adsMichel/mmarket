@@ -259,42 +259,266 @@
         </div>
     </div>
 
-    <script src="quagga.js"></script>
     <script>
-      // Elementos do DOM
+      // Configuração do QuaggaJS
+      const config = {
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector("#interactive"),
+          constraints: {
+            width: 640,
+            height: 480,
+            facingMode: "environment",
+            // aspectRatio: { min: 1, max: 2 },
+          },
+          area: {
+            top: "20%",
+            right: "20%",
+            left: "20%",
+            bottom: "20%"
+          }
+        },
+        decoder: {
+          readers: [
+            "ean_reader",
+            "ean_8_reader",
+            "code_128_reader",
+            "code_39_reader",
+          ],
+          multiple: false,
+        },
+        locate: true,
+        locator: {
+          patchSize: "medium",
+          halfSample: true,
+        },
+        frequency: **5**,
+      };
+
+      // Elementos de navegação e telas
+      const homeScreen = document.getElementById("home-screen");
+      const scannerArea = document.getElementById("scanner-area");
+      const btnLer = document.getElementById("btn-ler");
+      const btnHome = document.getElementById("btn-home"); // Botão "Lista"
+      const nomeProdutoEl = document.getElementById("nome-produto");
+
+      // Elementos do DOM do Modal de Inserção
       const interactive = document.getElementById("interactive");
-      const modal = document.getElementById("product-modal");
-      const closeModalBtn = document.querySelector(".close-button");
+      const productModal = document.getElementById("product-modal");
+      const closeModalBtn = productModal.querySelector(".close-button");
       const modalProductName = document.getElementById("modal-product-name");
       const inputQuantidade = document.getElementById("input-quantidade");
       const inputValor = document.getElementById("input-valor");
       const btnAdicionar = document.getElementById("btn-adicionar");
+      
+      // Elementos do DOM do Modal da Lista (Novo)
+      const listModal = document.getElementById("list-modal");
+      const closeListModalBtn = listModal.querySelector(".close-list-button");
+      const listaProdutosEl = document.getElementById("lista-produtos");
+      const valorTotalHeaderEl = document.getElementById("valor-total-header"); // Header principal
+      const valorTotalModalEl = document.getElementById("valor-total-modal"); // Total no modal da lista
+      const listaVaziaMsg = document.getElementById("lista-vazia-mensagem");
+      const btnLimparLista = document.getElementById("btn-limpar-lista");
 
-      // --- FUNÇÕES DO MODAL ---
 
-      function abrirModal(nome, ean) {
-            modalProductName.textContent = nome;
-            inputQuantidade.value = "";
-            inputValor.value = "";
-            modal.classList.remove('hidden');
-            inputQuantidade.focus();
-            modal.dataset.ean = ean;
-            console.log(`Modal aberto para EAN: ${ean}`);
-        }
+      let scannerEmFuncionamento = false;
+      let codigoEncontrado = null;
+      
+      // Chave do localStorage
+      const STORAGE_KEY = 'listaDeProdutos';
 
-      function abrirModalManual() {
-        abrirModal("Inserir Produto", "MANUAL");
-        // nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
+      // --- FUNÇÕES DE ARMAZENAMENTO E CÁLCULO ---
+      
+      /** Carrega a lista de produtos do localStorage. */
+      function carregarLista() {
+          const listaJSON = localStorage.getItem(STORAGE_KEY);
+          return listaJSON ? JSON.parse(listaJSON) : [];
+      }
+      
+      /** Salva a lista de produtos no localStorage. */
+      function salvarLista(lista) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+          atualizarTotalELista(); // Garante que o total seja sempre atualizado após salvar
+      }
+      
+      /** Calcula o total de todos os produtos na lista. */
+      function calcularTotal(lista) {
+          return lista.reduce((soma, produto) => soma + produto.subtotal, 0);
+      }
+      
+      /** Formata um valor numérico para o padrão de moeda BRL (R$). */
+      function formatarMoeda(valor) {
+          return valor.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+          });
       }
 
-      function fecharModal() {
-        modal.classList.add("hidden");
-        if (
-          !scannerEmFuncionamento &&
-          scannerArea.classList.contains("hidden")
-        ) {
-          mostrarTela("home");
+      // --- FUNÇÕES DE RENDERIZAÇÃO E ATUALIZAÇÃO ---
+      
+      /** Renderiza a lista de produtos no modal e atualiza o total no header e no modal. */
+      function renderizarLista() {
+        const lista = carregarLista();
+        listaProdutosEl.innerHTML = "";
+        
+        if (lista.length === 0) {
+          listaProdutosEl.appendChild(listaVaziaMsg);
+          btnLimparLista.disabled = true;
+        } else {
+          btnLimparLista.disabled = false;
+          lista.forEach((produto, index) => {
+            const listItem = document.createElement("li");
+            listItem.className = "bg-gray-50 p-3 rounded-xl shadow-sm flex justify-between items-center border border-gray-200";
+            listItem.innerHTML = `
+              <div>
+                <p class="font-semibold text-gray-900">${produto.nome}</p>
+                <p class="text-xs text-gray-500">Qtd: ${produto.quantidade} x ${formatarMoeda(produto.valorUnitario)}</p>
+              </div>
+              <div class="text-right flex items-center gap-3">
+                <p class="font-bold text-base text-purple-600">${formatarMoeda(produto.subtotal)}</p>
+                <button data-index="${index}" class="btn-remover text-red-500 hover:text-red-700 transition">
+                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+              </div>
+            `;
+            listaProdutosEl.appendChild(listItem);
+          });
+          
+          // Adiciona listeners aos botões de remoção
+          document.querySelectorAll('.btn-remover').forEach(button => {
+              button.addEventListener('click', removerProduto);
+          });
         }
+        
+        const total = calcularTotal(lista);
+        valorTotalHeaderEl.textContent = formatarMoeda(total);
+        valorTotalModalEl.textContent = formatarMoeda(total);
+      }
+
+      /** Atualiza os totais nas telas (Header e Modal). */
+      function atualizarTotalELista() {
+          renderizarLista();
+      }
+      
+      /** Remove um produto da lista pelo seu índice. */
+      function removerProduto(event) {
+          const index = parseInt(event.currentTarget.dataset.index);
+          let lista = carregarLista();
+          
+          if (index > -1 && index < lista.length) {
+              lista.splice(index, 1); // Remove 1 elemento no índice
+              salvarLista(lista);
+          }
+      }
+      
+      /** Limpa toda a lista de produtos. */
+      function limparLista() {
+           if (confirm("Tem certeza que deseja limpar toda a lista de compras?")) {
+               salvarLista([]);
+               alert("Lista limpa!");
+           }
+      }
+
+      // --- FUNÇÕES DE NAVEGAÇÃO E MODAIS ---
+
+      function mostrarTela(tela) {
+        homeScreen.classList.add("hidden");
+        scannerArea.classList.add("hidden");
+
+        if (tela === "home") {
+          homeScreen.classList.remove("hidden");
+          pararScanner();
+        } else if (tela === "scanner") {
+          scannerArea.classList.remove("hidden");
+        }
+      }
+
+      function abrirProductModal(nome, ean) {
+        modalProductName.textContent = nome;
+        inputQuantidade.value = ""; 
+        inputValor.value = ""; 
+        productModal.classList.remove("hidden");
+        inputQuantidade.focus();
+        productModal.dataset.ean = ean;
+      }
+
+      function fecharProductModal() {
+        productModal.classList.add("hidden");
+        // Volta para a tela home se o modal for fechado (e não estiver no scanner)
+        if (scannerArea.classList.contains("hidden")) {
+            mostrarTela("home");
+        }
+      }
+      
+      function abrirListModal() {
+          renderizarLista(); // Renderiza a lista antes de abrir
+          listModal.classList.remove('hidden');
+      }
+      
+      function fecharListModal() {
+          listModal.classList.add('hidden');
+      }
+
+      // --- FUNÇÕES DO SCANNER ---
+
+      function pararScanner(callback) {
+        if (!scannerEmFuncionamento) return;
+
+        Quagga.stop(function () {
+          const video = interactive.querySelector("video");
+          if (video && video.srcObject) {
+            video.srcObject.getTracks().forEach((track) => {
+              track.stop();
+            });
+            video.srcObject = null;
+          }
+
+          codigoEncontrado = null;
+          interactive.innerHTML = "";
+          // nomeProdutoEl.textContent = "Aguardando código...";
+
+          // btnLer.querySelector("span").textContent = "Parar";
+
+          if (callback) callback();
+        });
+
+        scannerEmFuncionamento = false;
+      }
+
+      function iniciarScanner() {
+        if (scannerEmFuncionamento) return;
+
+        mostrarTela("scanner");
+        interactive.innerHTML = "";
+
+        Quagga.init(config, function (err) {
+          if (err) {
+            console.error("Erro ao inicializar o Quagga:", err);
+            alert("Erro ao iniciar a câmera! Verifique as permissões.");
+            mostrarTela("home");
+            return;
+          }
+          Quagga.start();
+          scannerEmFuncionamento = true;
+        });
+      }
+
+      // Quando um código é detectado
+      Quagga.onDetected(function (data) {
+        const codigo = data.codeResult.code;
+
+        if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
+          codigoEncontrado = codigo;
+          pararScanner();
+          mostrarTela("home"); // Volta para a tela home para mostrar o nome
+          buscarProduto(codigo);
+        }
+      });
+      
+      function abrirModalManual() {
+        abrirProductModal("Inserir Produto Manualmente", "MANUAL");
+        nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
       }
 
       // --- FUNÇÃO DE BUSCA NA API DE PRODUTOS ---
@@ -327,7 +551,7 @@
             data.description || "Produto sem descrição (EAN: " + ean + ")";
 
           nomeProdutoEl.textContent = nomeProduto;
-          abrirModal(nomeProduto, ean);
+          abrirProductModal(nomeProduto, ean);
         } catch (error) {
           console.error("Erro na busca da API:", error);
           nomeProdutoEl.textContent =
@@ -336,6 +560,93 @@
         }
       }
 
+      // --- EVENT LISTENERS ---
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Inicializa o total no header
+        atualizarTotalELista();
+        
+        // Botão Ler
+        btnLer.addEventListener("click", () => {
+          if (scannerEmFuncionamento) {
+            pararScanner();
+            mostrarTela("home");
+          } else {
+            iniciarScanner();
+          }
+        });
+        
+        // Botão Início (Lista)
+        btnHome.addEventListener("click", abrirListModal);
+
+        // Fechar Modal de Inserção
+        closeModalBtn.addEventListener("click", fecharProductModal);
+        productModal.addEventListener("click", (event) => {
+          if (event.target === productModal) { fecharProductModal(); }
+        });
+        
+        // Fechar Modal da Lista
+        closeListModalBtn.addEventListener("click", fecharListModal);
+        listModal.addEventListener("click", (event) => {
+          if (event.target === listModal) { fecharListModal(); }
+        });
+        
+        // Limpar Lista
+        btnLimparLista.addEventListener('click', limparLista);
+
+        // Adicionar Produto
+        btnAdicionar.addEventListener("click", () => {
+          const ean = productModal.dataset.ean;
+          const nome = modalProductName.textContent;
+          const quantidade = inputQuantidade.value;
+          const valor = inputValor.value;
+          
+          let qtd = parseFloat(quantidade);
+          let preco = parseFloat(valor.replace(',', '.'));
+          
+          if (isNaN(qtd) || qtd <= 0) {
+              alert("Por favor, insira uma quantidade válida.");
+              return;
+          }
+          if (isNaN(preco) || preco < 0) {
+              alert("Por favor, insira um valor válido.");
+              return;
+          }
+
+          let subtotal = qtd * preco;
+          
+          const novoProduto = {
+              nome: nome,
+              quantidade: qtd,
+              valorUnitario: preco,
+              subtotal: subtotal,
+              ean: ean
+          };
+          
+          // Carrega, adiciona e salva
+          const listaAtual = carregarLista();
+          listaAtual.push(novoProduto);
+          salvarLista(listaAtual);
+
+          const totalFormatado = formatarMoeda(subtotal);
+
+          // SUBSTITUIÇÃO DO ALERT NATIVO PELO SWEETALERT2
+          Swal.fire({
+            title: "Produto Adicionado! 💜",
+            showConfirmButton: false,
+            timer: 2000,
+            toast: true,
+            position: 'top-end'
+          });
+
+          fecharProductModal();
+          mostrarTela("home");
+        });
+        
+        // Inicia na tela home
+        mostrarTela("home");
+      });
     </script>
+
   </body>
 </html>
