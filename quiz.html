@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💖 Quiz de Relacionamento Essencial</title>
+    <title>💖 Quiz de Relacionamento Essencial - Múltiplos Usuários</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Cores personalizadas para o tema "feminino" */
@@ -11,6 +11,10 @@
         .text-fuchsia-dark { color: #A21CAF; }
         .border-pink-medium { border-color: #DB2777; }
         .bg-pink-medium { background-color: #DB2777; }
+        /* Para preservar a quebra de linha nas respostas */
+        .whitespace-pre-wrap {
+            white-space: pre-wrap;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -36,7 +40,7 @@
         <div id="quiz-container">
             </div>
         
-        <div id="navigation-buttons" class="mt-8 flex justify-between">
+        <div id="navigation-buttons" class="mt-8 flex justify-between" style="display: none;">
             <button id="prev-btn" class="bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-500 transition duration-300 shadow-md disabled:opacity-50" disabled>
                 Anterior
             </button>
@@ -47,8 +51,11 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'relationshipQuizAnswers';
+        // Chave de armazenamento principal para guardar todos os quizzes por nome
+        const STORAGE_KEY = 'relationshipQuizUsers'; 
+        const TEMPORARY_ANSWERS_KEY = 'tempQuizAnswers'; // Chave para respostas em andamento
         const questionsData = [
+            // ... (Seu array de perguntas permanece o mesmo)
             { "id": 1, "question": "Você quer ter filhos?", "notes": "Provavelmente a pergunta mais óbvia e básica para fazer ao seu parceiro." },
             { "id": 2, "question": "Quantos filhos você quer ter?", "notes": "A pergunta seguinte obrigatória." },
             { "id": 3, "question": "O que você acha da minha família?", "notes": "Um bom relacionamento com os sogros também é vital." },
@@ -151,24 +158,170 @@
             { "id": 100, "question": "Qual é o seu maior medo?", "notes": "Refugiem-se no conhecimento de que vocês estão lá um para o outro." },
             { "id": 101, "question": "Como posso te ajudar quando você estiver estressado?", "notes": "Uma pergunta linda e muito reconfortante que vai fazer você amar ainda mais o seu parceiro." }
         ];
+        // ... (Seu array de perguntas permanece o mesmo)
 
         let currentQuestionIndex = 0;
+        let currentUserName = null;
         const quizContainer = document.getElementById('quiz-container');
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const navButtons = document.getElementById('navigation-buttons');
 
-        // Carrega todas as respostas salvas ou inicializa um objeto vazio
-        let answers = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        // Carrega *todos* os quizzes salvos (por nome)
+        function loadAllQuizzes() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        }
+
+        // Carrega respostas temporárias (se houver um quiz em andamento)
+        function loadTempAnswers() {
+            return JSON.parse(sessionStorage.getItem(TEMPORARY_ANSWERS_KEY)) || {};
+        }
+
+        // Salva respostas temporariamente no sessionStorage
+        function saveTempAnswers(answers) {
+            sessionStorage.setItem(TEMPORARY_ANSWERS_KEY, JSON.stringify(answers));
+        }
+
+        // Armazena as respostas do quiz em andamento
+        let answers = loadTempAnswers();
 
         function saveAnswer() {
             const answerTextarea = document.getElementById(`answer-${currentQuestionIndex}`);
             if (answerTextarea) {
+                // Guarda a resposta atual
                 answers[currentQuestionIndex] = answerTextarea.value;
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+                // Salva temporariamente no sessionStorage para manter o estado até o salvamento final
+                saveTempAnswers(answers); 
             }
         }
 
+        /* -------------------------------------------------------------------------- */
+        /* NOVAS FUNCIONALIDADES                            */
+        /* -------------------------------------------------------------------------- */
+
+        function renderStartScreen() {
+            navButtons.style.display = 'none';
+            const allQuizzes = loadAllQuizzes();
+            const userNames = Object.keys(allQuizzes);
+            const savedQuizzesHtml = userNames.length > 0 ? `
+                <h3 class="text-xl font-bold text-fuchsia-dark mt-8 mb-4 border-t pt-4">Resultados Salvos</h3>
+                <ul class="space-y-2">
+                    ${userNames.map(name => `
+                        <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm">
+                            <span class="font-semibold text-gray-700">${name}</span>
+                            <button onclick="viewUserSummary('${name}')" class="text-sm bg-pink-medium text-white py-1 px-3 rounded hover:bg-fuchsia-dark transition duration-200">
+                                Ver Respostas
+                            </button>
+                        </li>
+                    `).join('')}
+                </ul>
+            ` : '<p class="text-center text-gray-500 mt-6">Nenhum quiz concluído ainda.</p>';
+
+
+            quizContainer.innerHTML = `
+                <div class="text-center space-y-4">
+                    <p class="text-lg text-gray-700 font-medium">Bem-vindo(a) ao Quiz do Casal!</p>
+                    <p class="text-lg text-gray-700">Preencha seu nome para iniciar um novo quiz ou veja um resultado salvo:</p>
+                </div>
+
+                <div class="mt-6">
+                    <label for="userName" class="block text-lg font-medium text-gray-700 mb-2">Seu Nome:</label>
+                    <input type="text" id="userName" placeholder="Ex: Ana, Pedro, Nós" 
+                        class="w-full p-3 border-2 border-pink-medium rounded-lg focus:ring-fuchsia-dark focus:border-fuchsia-dark transition duration-150"
+                        value="${currentUserName || ''}" onkeydown="if(event.key === 'Enter') startQuiz()">
+                </div>
+                
+                <div class="text-center mt-6">
+                    <button onclick="startQuiz()" class="bg-fuchsia-dark text-white font-semibold py-3 px-6 rounded-lg hover:bg-pink-medium transition duration-300 shadow-xl disabled:opacity-50" id="start-btn">
+                        Iniciar Novo Quiz
+                    </button>
+                </div>
+                ${savedQuizzesHtml}
+            `;
+
+            // Garante que o botão de início seja atualizado se já houver texto
+            const nameInput = document.getElementById('userName');
+            const startBtn = document.getElementById('start-btn');
+            nameInput.addEventListener('input', () => {
+                startBtn.disabled = nameInput.value.trim() === '';
+            });
+            startBtn.disabled = nameInput.value.trim() === '';
+
+             // Se houver respostas temporárias, oferece a opção de continuar
+            if (Object.keys(answers).length > 0) {
+                const continueBtnHtml = `
+                    <div class="mt-6 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 rounded-lg">
+                        <p class="font-bold">Quiz em Andamento!</p>
+                        <p class="text-sm">Existem respostas não finalizadas. Deseja <button onclick="continueQuiz()" class="text-blue-600 underline font-semibold">Continuar de onde parou</button> ou <button onclick="clearTempAndStartNew()" class="text-red-600 underline font-semibold">Começar um novo</button>?</p>
+                    </div>
+                `;
+                quizContainer.insertAdjacentHTML('afterbegin', continueBtnHtml);
+            }
+        }
+
+        function clearTempAndStartNew() {
+             sessionStorage.removeItem(TEMPORARY_ANSWERS_KEY);
+             answers = {};
+             renderStartScreen();
+        }
+
+        function startQuiz(userName) {
+            const name = (userName || document.getElementById('userName').value).trim();
+            if (!name) {
+                alert("Por favor, digite um nome para começar o quiz.");
+                return;
+            }
+            
+            currentUserName = name;
+            navButtons.style.display = 'flex';
+            
+            // Carrega respostas temporárias (se houver) ou começa do zero
+            answers = loadTempAnswers(); 
+
+            if (Object.keys(answers).length > 0) {
+                 // Se houver respostas, encontra o último índice para continuar
+                const lastIndex = Math.max(...Object.keys(answers).map(Number));
+                currentQuestionIndex = lastIndex < questionsData.length - 1 ? lastIndex + 1 : lastIndex;
+            } else {
+                currentQuestionIndex = 0;
+            }
+            
+            renderQuestion(currentQuestionIndex);
+        }
+
+        function continueQuiz() {
+             navButtons.style.display = 'flex';
+             const lastIndex = Math.max(...Object.keys(answers).map(Number));
+             currentQuestionIndex = lastIndex < questionsData.length - 1 ? lastIndex + 1 : lastIndex;
+             renderQuestion(currentQuestionIndex);
+        }
+
+        function viewUserSummary(name) {
+            const allQuizzes = loadAllQuizzes();
+            const userAnswers = allQuizzes[name];
+            if (!userAnswers) {
+                alert(`As respostas para "${name}" não foram encontradas.`);
+                renderStartScreen();
+                return;
+            }
+
+            renderSummary(userAnswers, name, true); // O terceiro parâmetro indica que é uma visualização salva
+        }
+        
+        function saveFinalQuiz(answersToSave, name) {
+            const allQuizzes = loadAllQuizzes();
+            allQuizzes[name] = answersToSave; // Salva as respostas sob o nome
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allQuizzes));
+            sessionStorage.removeItem(TEMPORARY_ANSWERS_KEY); // Limpa as respostas temporárias
+            currentUserName = null; // Limpa o nome atual para o próximo uso
+            answers = {}; // Limpa o objeto de respostas em memória
+            alert(`Quiz de "${name}" salvo com sucesso!`);
+        }
+
+        /* -------------------------------------------------------------------------- */
+        /* LÓGICA EXISTENTE MODIFICADA                       */
+        /* -------------------------------------------------------------------------- */
+        
         function renderQuestion(index) {
             if (index < 0 || index >= questionsData.length) return;
 
@@ -177,8 +330,12 @@
 
             const question = questionsData[index];
             
+            // Título para indicar quem está respondendo
+            const userTitle = currentUserName ? `<p class="text-xl font-bold text-pink-medium mb-4 text-center">Respondendo como: ${currentUserName}</p>` : '';
+            
             // HTML para a pergunta, dica e área de resposta
             quizContainer.innerHTML = `
+                ${userTitle}
                 <div class="space-y-6">
                     <p class="text-lg font-medium text-gray-500 text-center">
                         Pergunta ${question.id} de ${questionsData.length}
@@ -204,27 +361,33 @@
             // Adiciona listener de input para salvar a resposta enquanto o usuário digita
             const answerTextarea = document.getElementById(`answer-${index}`);
             if (answerTextarea) {
+                // Remove o listener anterior e adiciona o novo (por causa da troca de HTML)
+                // Usamos o evento 'input' para salvar automaticamente
                 answerTextarea.addEventListener('input', saveAnswer);
             }
 
             updateButtons();
         }
 
-        function renderSummary() {
-            // Salva a resposta da última pergunta
-            saveAnswer(); 
+        function renderSummary(answersToDisplay = answers, name = currentUserName, isSavedView = false) {
+            // Se for a conclusão do quiz (não uma visualização salva), salva a última resposta
+            if (!isSavedView) {
+                saveAnswer(); 
+            }
             navButtons.style.display = 'none';
 
             let summaryHtml = `
                 <div class="text-center py-4 border-b border-gray-200">
-                    <h2 class="text-3xl font-bold text-fuchsia-dark mb-2">Resultado do Quiz 🎉</h2>
-                    <p class="text-lg text-gray-700">Aqui estão todas as suas respostas salvas:</p>
+                    <h2 class="text-3xl font-bold text-fuchsia-dark mb-2">${isSavedView ? 'Respostas Salvas de' : 'Quiz Concluído por'} 🎉</h2>
+                    <h3 class="text-2xl font-bold text-pink-medium">${name}</h3>
+                    <p class="text-lg text-gray-700 mt-2">${isSavedView ? 'Esta é uma versão salva.' : 'Suas respostas estão prontas para serem salvas.'}</p>
                 </div>
                 <div class="mt-6 space-y-8">
             `;
 
             questionsData.forEach((q, index) => {
-                const answer = answers[index] || 'Nenhuma resposta registrada.';
+                // Usa o objeto answersToDisplay (pode ser o temporário ou o salvo)
+                const answer = answersToDisplay[index] || 'Nenhuma resposta registrada.';
                 
                 summaryHtml += `
                     <div class="p-5 border-2 border-gray-100 rounded-lg shadow-sm">
@@ -241,9 +404,29 @@
 
             summaryHtml += `
                 </div>
-                <div class="text-center mt-8">
-                    <button onclick="clearStorageAndRestart()" class="bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300 shadow-md">
-                        Limpar Respostas e Recomeçar
+                <div class="text-center mt-8 space-y-4">
+            `;
+            
+            if (!isSavedView) {
+                // Botão para salvar o quiz apenas na conclusão
+                summaryHtml += `
+                    <button onclick="saveFinalQuiz(answers, currentUserName); renderStartScreen();" class="bg-pink-medium text-white font-semibold py-2 px-6 rounded-lg hover:bg-fuchsia-dark transition duration-300 shadow-md w-full md:w-auto">
+                        Salvar Respostas e Voltar ao Início
+                    </button>
+                `;
+            } else {
+                 // Botão de deletar quiz salvo (somente na visualização salva)
+                 summaryHtml += `
+                    <button onclick="deleteUserQuiz('${name}'); renderStartScreen();" class="bg-red-500 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-600 transition duration-300 shadow-md w-full md:w-auto">
+                        Deletar Quiz Salvo de ${name}
+                    </button>
+                 `;
+            }
+            
+            // Botão para voltar à tela inicial
+            summaryHtml += `
+                    <button onclick="renderStartScreen()" class="bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg hover:bg-gray-800 transition duration-300 shadow-md w-full md:w-auto">
+                        Voltar à Tela Inicial
                     </button>
                 </div>
             `;
@@ -251,19 +434,21 @@
             quizContainer.innerHTML = summaryHtml;
         }
 
-        function clearStorageAndRestart() {
-            localStorage.removeItem(STORAGE_KEY);
-            answers = {};
-            currentQuestionIndex = 0;
-            navButtons.style.display = 'flex';
-            renderQuestion(currentQuestionIndex);
+        // Nova função para deletar um quiz salvo
+        function deleteUserQuiz(name) {
+            if (confirm(`Tem certeza que deseja deletar as respostas salvas para "${name}"?`)) {
+                const allQuizzes = loadAllQuizzes();
+                delete allQuizzes[name];
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(allQuizzes));
+                alert(`Quiz de "${name}" deletado.`);
+            }
         }
-
+        
         function updateButtons() {
             prevBtn.disabled = currentQuestionIndex === 0;
             
             if (currentQuestionIndex === questionsData.length - 1) {
-                nextBtn.textContent = 'Ver Respostas Finais';
+                nextBtn.textContent = 'Finalizar e Salvar';
                 nextBtn.classList.remove('bg-pink-medium', 'hover:bg-fuchsia-dark');
                 nextBtn.classList.add('bg-fuchsia-dark', 'hover:bg-pink-medium');
             } else {
@@ -278,7 +463,13 @@
                 currentQuestionIndex++;
                 renderQuestion(currentQuestionIndex);
             } else {
-                renderSummary();
+                // Ao finalizar, renderiza o sumário para salvar
+                if (!currentUserName) {
+                     alert("Erro: Nome do usuário não definido. Retornando ao início.");
+                     renderStartScreen();
+                     return;
+                }
+                renderSummary(answers, currentUserName, false);
             }
         }
 
@@ -293,16 +484,8 @@
         nextBtn.addEventListener('click', handleNext);
         prevBtn.addEventListener('click', handlePrev);
 
-        // Iniciar o Quiz
-        // Tenta carregar a última pergunta respondida ou começa da primeira
-        const savedAnswers = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (savedAnswers && Object.keys(savedAnswers).length > 0) {
-            // Se houver respostas salvas, inicia na próxima pergunta após a última respondida
-            const lastIndex = Math.max(...Object.keys(savedAnswers).map(Number));
-            currentQuestionIndex = lastIndex < questionsData.length - 1 ? lastIndex + 1 : lastIndex;
-        }
-
-        renderQuestion(currentQuestionIndex);
+        // Iniciar o Quiz na tela inicial
+        renderStartScreen();
     </script>
 
 </body>
