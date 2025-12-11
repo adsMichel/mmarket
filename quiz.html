@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💖 Quiz de Relacionamento Essencial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Cores personalizadas para o tema "feminino" */
+        .bg-rose-light { background-color: #FCE7F6; }
+        .text-fuchsia-dark { color: #A21CAF; }
+        .border-pink-medium { border-color: #DB2777; }
+        .bg-pink-medium { background-color: #DB2777; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'rose-light': '#FCE7F6',
+                        'fuchsia-dark': '#A21CAF',
+                        'pink-medium': '#DB2777',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-rose-light min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-3xl bg-white shadow-2xl rounded-xl p-8 md:p-12">
+        <h1 class="text-3xl font-extrabold text-fuchsia-dark mb-6 text-center">
+            💖 Quiz do Casal: Perguntas Essenciais
+        </h1>
+
+        <div id="quiz-container">
+            </div>
+        
+        <div id="navigation-buttons" class="mt-8 flex justify-between">
+            <button id="prev-btn" class="bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-500 transition duration-300 shadow-md disabled:opacity-50" disabled>
+                Anterior
+            </button>
+            <button id="next-btn" class="bg-pink-medium text-white font-semibold py-2 px-4 rounded-lg hover:bg-fuchsia-dark transition duration-300 shadow-xl">
+                Próxima Pergunta
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'relationshipQuizAnswers';
+        const questionsData = [
+            { "id": 1, "question": "Você quer ter filhos?", "notes": "Provavelmente a pergunta mais óbvia e básica para fazer ao seu parceiro." },
+            { "id": 2, "question": "Quantos filhos você quer ter?", "notes": "A pergunta seguinte obrigatória." },
+            { "id": 3, "question": "O que você acha da minha família?", "notes": "Um bom relacionamento com os sogros também é vital." },
+            { "id": 4, "question": "Com que frequência nós vamos visitar nossas famílias?", "notes": "Outro ponto a se considerar, e vocês devem avaliar vários fatores." },
+            { "id": 5, "question": "Onde nós vamos morar?", "notes": "A sua vida seria muito melhor se você já soubesse isso antes do casamento." },
+            { "id": 6, "question": "Do que você mais gosta no sexo?", "notes": "Sexo é essencial no casamento." },
+            { "id": 7, "question": "Quais são os seus limites sexuais?", "notes": "Você já deve saber a essa altura, mas é bom se certificar." },
+            { "id": 8, "question": "O que mais te excita em mim?", "notes": "Esta será uma conversa divertida!" },
+            { "id": 9, "question": "Como você costuma expressar raiva?", "notes": "Isso é muito importante para você saber o que esperar." },
+            { "id": 10, "question": "Existe alguma coisa em mim que te irrita?", "notes": "É importante porque vocês vão ficar juntos por um longo tempo." },
+            { "id": 11, "question": "O que você acha que faz ou desfaz um relacionamento?", "notes": "Uma bem profunda que fará o seu parceiro pensar." },
+            { "id": 12, "question": "Quais são as três coisas que você mais aprecia em mim?", "notes": "Lembrem um ao outro das coisas bonitas que vocês veem um no outro." },
+            { "id": 13, "question": "O que te atraiu em mim?", "notes": "A primeira coisa bonita que seu parceiro viu em você é uma lembrança tão preciosa que ambos devem valorizar." },
+            { "id": 14, "question": "O que lealdade e fidelidade significam para você no nosso casamento?", "notes": "Isso é de extrema importância." },
+            { "id": 15, "question": "Como você nos vê daqui a dez anos?", "notes": "Você tem que ter aspirações e sonhos para vocês dois." },
+            { "id": 16, "question": "Qual foi o nosso momento juntos mais inesquecível para você?", "notes": "Pense nos bons tempos." },
+            { "id": 17, "question": "De quais nomes de bebê você gosta?", "notes": "Deixe seu parceiro escolher um nome de menina e um nome de menino, então decidam juntos." },
+            { "id": 18, "question": "Quando foi a última vez que você se sentiu mais amado por mim?", "notes": "Tome nota disso e faça mais!" },
+            { "id": 19, "question": "O que te deixa com ciúmes?", "notes": "Esse diabo verde pode realmente arruinar relacionamentos, então é melhor evitá-lo." },
+            { "id": 20, "question": "Quanto dinheiro você ganha?", "notes": "A transparência quando se trata de finanças deve ser estabelecida entre vocês dois." },
+            { "id": 21, "question": "Você tem alguma dívida grande?", "notes": "O que é meu é seu… incluindo dívidas, aparentemente." },
+            { "id": 22, "question": "Você é um poupador ou um gastador?", "notes": "Pergunte isso para que vocês possam ajudar um ao outro a controlar seu orçamento." },
+            { "id": 23, "question": "Vamos ter um acordo pré-nupcial antes de nos casarmos?", "notes": "Uma das decisões mais polêmicas entre noivos!" },
+            { "id": 24, "question": "Precisamos abrir uma conta conjunta no banco?", "notes": "Vai ser uma propriedade conjugal, então vocês dois têm realmente que conversar sobre isso." },
+            { "id": 25, "question": "O que é mais importante, uma casa grande ou uma casa bem localizada?", "notes": "O seu endereço residencial é essencial para o seu futuro." },
+            { "id": 26, "question": "De quanto devem ser nossas despesas mensais?", "notes": "Isso vai fazer ou quebrar seu orçamento." },
+            { "id": 27, "question": "Onde nossos filhos vão estudar?", "notes": "Escola pública ou particular?" },
+            { "id": 28, "question": "Você concorda com mentiras leves apenas para evitar discussões?", "notes": "Acredite, algumas pessoas preferem olhar para o outro lado para salvar seu relacionamento." },
+            { "id": 29, "question": "Eu já te decepcionei?", "notes": "Decepções são comuns, então não se preocupe." },
+            { "id": 30, "question": "Você me acha bonito(a)?", "notes": "A resposta deve ser um SIM!" },
+            { "id": 31, "question": "Tudo bem se eu largar meu emprego quando já tivermos dois (2) filhos?", "notes": "As mulheres que trabalham costumam perguntar isso aos seus parceiros." },
+            { "id": 32, "question": "Quais são seus objetivos de carreira?", "notes": "É importante que vocês se apoiem em seus sonhos." },
+            { "id": 33, "question": "Tudo bem se eu fizer hora extra e chegar tarde em casa?", "notes": "Você não é mais dono do seu próprio tempo quando está casado." },
+            { "id": 34, "question": "Você está disposto a se mudar para outro país se meu trabalho exigir?", "notes": "Esta é definitivamente uma decisão muito difícil para vocês dois." },
+            { "id": 35, "question": "Qual é a sua viagem dos sonhos?", "notes": "Vocês podem, então, economizar para pagar essa viagem." },
+            { "id": 36, "question": "O que você acha dos meus melhores amigos?", "notes": "Você precisa se dar bem com os amigos dele(a)." },
+            { "id": 37, "question": "Tudo bem se eu sair com meus amigos de vez em quando?", "notes": "Se o seu parceiro for uma pessoa festeira, vocês podem sair todos juntos!" },
+            { "id": 38, "question": "Vamos ter uma faxineira?", "notes": "Se vocês dois estiverem trabalhando, sugiro que o façam!" },
+            { "id": 39, "question": "Tudo bem se eu fumar e/ou beber?", "notes": "Os vícios do seu parceiro afetam não apenas ele, mas também você." },
+            { "id": 40, "question": "Quão importante é a sua fé e religião para você?", "notes": "Polêmico, mas vocês têm que falar sobre isso." },
+            { "id": 41, "question": "Você espera que eu participe das atividades da sua igreja?", "notes": "Você só precisa se comprometer nas suas expectativas." },
+            { "id": 42, "question": "Você cozinha?", "notes": "Simples, mas afetará muitas das suas tradições, tarefas e despesas." },
+            { "id": 43, "question": "Com que frequência você acha que devemos jantar fora em uma semana?", "notes": "Vocês definitivamente precisam concordar!" },
+            { "id": 44, "question": "Como vamos dividir as contas?", "notes": "Foi-se o tempo em que maridos/homens pagavam tudo." },
+            { "id": 45, "question": "O que é mais importante, trabalho ou família?", "notes": "É aqui que entra o princípio do equilíbrio entre vida profissional e pessoal." },
+            { "id": 46, "question": "Que distância de idade você quer que nossos filhos tenham?", "notes": "O planejamento familiar realmente ajuda." },
+            { "id": 47, "question": "Você consideraria o divórcio?", "notes": "Vai ser difícil falar sobre isso, mas é preciso." },
+            { "id": 48, "question": "Você é contra métodos contraceptivos?", "notes": "É prático falar sobre esse tipo de coisa." },
+            { "id": 49, "question": "Quem deve fazer as tarefas domésticas?", "notes": "Vocês dois podem dividir dependendo de suas cargas de trabalho e das tarefas que sabem fazer." },
+            { "id": 50, "question": "Qual você acha que é o seu papel como marido/esposa?", "notes": "Isso deve ficar muito claro desde o início. Esse papel é para toda a vida." },
+            { "id": 51, "question": "Quão bem você faz orçamentos?", "notes": "Outra questão sobre finanças que é essencial para ser abordada por todos os casais." },
+            { "id": 52, "question": "E se quisermos algo que não pudermos pagar?", "notes": "Disciplina e contentamento são realmente a chave para evitar despesas desnecessárias." },
+            { "id": 53, "question": "Precisamos poupar para a aposentadoria?", "notes": "A menos que você seja podre de rico, SIM!" },
+            { "id": 54, "question": "Você gosta de viajar?", "notes": "Se os dois gostarem, vocês terão uma bela aventura juntos por toda a vida!" },
+            { "id": 55, "question": "Quão importante é passar tempo com seus amigos para você?", "notes": "É preciso saber equilibrar tudo." },
+            { "id": 56, "question": "Como devemos decidir se tivermos ideias/decisões opostas?", "notes": "Compromisso é fundamental." },
+            { "id": 57, "question": "Qual é a sua ideia de um dia perfeito?", "notes": "Vocês devem fazer de cada dia um dia perfeito um para o outro." },
+            { "id": 58, "question": "Para onde você gostaria de viajar?", "notes": "Façam uma lista juntos!" },
+            { "id": 59, "question": "Você tem histórico familiar de doenças?", "notes": "Isso pode ajudar vocês a prevenir quaisquer doenças que possam ter sido herdadas." },
+            { "id": 60, "question": "Qual é o seu maior medo em relação ao casamento?", "notes": "Juntos, vocês podem vencer esses medos." },
+            { "id": 61, "question": "O que você faria se nos desapaixonássemos?", "notes": "Se vocês realmente amarem um ao outro, podem fazer dar certo." },
+            { "id": 62, "question": "O que você acha que devemos fazer para apimentar nosso relacionamento?", "notes": "As possibilidades são infinitas…" },
+            { "id": 63, "question": "O dia do casamento te empolga ou te aterroriza?", "notes": "Um pouco dos dois, certo?" },
+            { "id": 64, "question": "Qual é o nosso orçamento para o casamento?", "notes": "Concentre-se no orçamento, vocês não precisam gastar muito." },
+            { "id": 65, "question": "Quem nós vamos convidar para o nosso casamento?", "notes": "Cerque-se de pessoas que te fazem feliz. Sua felicidade é mais importante que a delas durante o casamento." },
+            { "id": 66, "question": "Vamos ter um casamento grande ou íntimo?", "notes": "Tudo depende de vocês!" },
+            { "id": 67, "question": "Você gosta de animais de estimação?", "notes": "Seria mágico se os dois gostassem!" },
+            { "id": 68, "question": "Quantos animais de estimação são suficientes para você?", "notes": "Concordem nessa, pois também é uma grande responsabilidade." },
+            { "id": 69, "question": "Com que idade você quer se aposentar?", "notes": "Planejem seu futuro financeiro com um fundo de aposentadoria." },
+            { "id": 70, "question": "Como você se sente ajudando a pagar uma dívida do seu parceiro?", "notes": "De novo: “O que é meu é seu”." },
+            { "id": 71, "question": "Com que frequência você usa cartões de crédito?", "notes": "Controlar o uso de cartões de crédito será benéfico para ambos." },
+            { "id": 72, "question": "Você me acha sexualmente atraente?", "notes": "Entrar em detalhes íntimos pode realmente melhorar seu relacionamento um com o outro." },
+            { "id": 73, "question": "Você está pronto para sacrificar um pouco do seu espaço pessoal?", "notes": "É melhor estar, para sempre!" },
+            { "id": 74, "question": "Você está pronto para morar comigo?", "notes": "Definitivamente sim!" },
+            { "id": 75, "question": "Você está pronto para transar com apenas uma pessoa pelo resto da vida?", "notes": "O amor e o casamento podem te impelir a ser leal." },
+            { "id": 76, "question": "Você espera alguma mudança no nosso relacionamento após o casamento?", "notes": "Espero que não, certo? No entanto, há a responsabilidade adicional." },
+            { "id": 77, "question": "Quais são seus feriados favoritos?", "notes": "Você pode ficar junto com o seu amor nos feriados. Eu amo todos eles." },
+            { "id": 78, "question": "Como você comemorou seus aniversários?", "notes": "Seu parceiro não vai querer que você sinta muita falta de casa!" },
+            { "id": 79, "question": "Você gosta de dar presentes caros?", "notes": "Disciplina e simplicidade são a chave para uma vida feliz." },
+            { "id": 80, "question": "Quais são as tradições da sua família que você acha que ainda devemos seguir?", "notes": "Se você tiver um parceiro que valoriza tradições, tente respeitá-lo." },
+            { "id": 81, "question": "Em que situações você não vai querer falar comigo?", "notes": "Evite fazer isso. A comunicação também é fundamental." },
+            { "id": 82, "question": "Você prefere um trabalho de horário flexível ou um trabalho de tempo integral?", "notes": "Vocês devem concordar com isso como casal." },
+            { "id": 83, "question": "Qual é a melhor maneira de provar a você que eu te amo?", "notes": "Brega, mas sempre funciona!" },
+            { "id": 84, "question": "O que te repele do sexo?", "notes": "Você precisa saber disso para melhorar sua vida sexual!" },
+            { "id": 85, "question": "Com o que você sonha com mais frequência?", "notes": "Falar sobre sonhos com seu parceiro pode realmente aproximá-los um do outro." },
+            { "id": 86, "question": "Se você pudesse planejar o encontro perfeito comigo, como seria?", "notes": "Tenham encontros nos dias anteriores ao casamento e permaneçam consistentes quanto a isso." },
+            { "id": 87, "question": "Por que casamento?", "notes": "Uma das mais difíceis de responder, mas você precisa saber." },
+            { "id": 88, "question": "Como você lida com a mudança?", "notes": "O casamento é uma grande mudança, então vocês dois devem estar prontos para isso." },
+            { "id": 89, "question": "Quão bem lidamos com as divergências?", "notes": "Certifique-se de nunca dormir sem resolver um problema." },
+            { "id": 90, "question": "Quanto valorizamos o tempo juntos e o tempo separados?", "notes": "Casar não significa estar fisicamente juntos todos os dias. Também é saudável estar separados às vezes." },
+            { "id": 91, "question": "Quando você se sente inseguro ao compartilhar seus sentimentos comigo?", "notes": "É o objetivo de todo casal ser o confidente um do outro." },
+            { "id": 92, "question": "Qual é a sua lembrança de infância mais maravilhosa?", "notes": "Casar-se pode fazer você se sentir nostálgico às vezes." },
+            { "id": 93, "question": "Você tem algum segredo importante que ainda não compartilhou?", "notes": "Seria como ir à confissão do seu próprio casal ou a uma terapia antes de se casar!" },
+            { "id": 94, "question": "Você está aberto a terapia se precisarmos?", "notes": "Só para você poder riscar isso da lista." },
+            { "id": 95, "question": "Você tem certeza de mim?", "notes": "Essa pode levar a declarações bregas de amor de vocês dois." },
+            { "id": 96, "question": "Você está com o pé atrás?", "notes": "Outra maneira de perguntar se você tem certeza absoluta." },
+            { "id": 97, "question": "Você pediria dinheiro emprestado a amigos ou familiares, se estivesse em extrema necessidade?", "notes": "Em último caso, espero." },
+            { "id": 98, "question": "Você acredita que maridos e esposas devem ter partes iguais nas tarefas?", "notes": "O conhecimento das tarefas não é um papel de gênero." },
+            { "id": 99, "question": "Quais são seus objetivos financeiros?", "notes": "Vocês dois estão nisso juntos, então precisam discutir isso." },
+            { "id": 100, "question": "Qual é o seu maior medo?", "notes": "Refugiem-se no conhecimento de que vocês estão lá um para o outro." },
+            { "id": 101, "question": "Como posso te ajudar quando você estiver estressado?", "notes": "Uma pergunta linda e muito reconfortante que vai fazer você amar ainda mais o seu parceiro." }
+        ];
+
+        let currentQuestionIndex = 0;
+        const quizContainer = document.getElementById('quiz-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const navButtons = document.getElementById('navigation-buttons');
+
+        // Carrega todas as respostas salvas ou inicializa um objeto vazio
+        let answers = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+        function saveAnswer() {
+            const answerTextarea = document.getElementById(`answer-${currentQuestionIndex}`);
+            if (answerTextarea) {
+                answers[currentQuestionIndex] = answerTextarea.value;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+            }
+        }
+
+        function renderQuestion(index) {
+            if (index < 0 || index >= questionsData.length) return;
+
+            // Salva a resposta da pergunta anterior antes de mudar
+            saveAnswer(); 
+
+            const question = questionsData[index];
+            
+            // HTML para a pergunta, dica e área de resposta
+            quizContainer.innerHTML = `
+                <div class="space-y-6">
+                    <p class="text-lg font-medium text-gray-500 text-center">
+                        Pergunta ${question.id} de ${questionsData.length}
+                    </p>
+                    <h2 class="text-2xl font-bold text-fuchsia-dark text-center">
+                        ${question.question}
+                    </h2>
+                    
+                    <div class="p-4 bg-rose-light border-l-4 border-pink-medium rounded-r-lg shadow-inner">
+                        <p class="text-sm font-semibold text-pink-medium">Dica de Resposta:</p>
+                        <p class="text-sm text-gray-700 mt-1">${question.notes}</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <label for="answer-${index}" class="block text-lg font-medium text-gray-700 mb-2">Sua Resposta:</label>
+                        <textarea id="answer-${index}" rows="4" 
+                            class="w-full p-3 border-2 border-pink-medium rounded-lg focus:ring-fuchsia-dark focus:border-fuchsia-dark transition duration-150" 
+                            placeholder="Escreva sua resposta ou converse com seu parceiro...">${answers[index] || ''}</textarea>
+                    </div>
+                </div>
+            `;
+            
+            // Adiciona listener de input para salvar a resposta enquanto o usuário digita
+            const answerTextarea = document.getElementById(`answer-${index}`);
+            if (answerTextarea) {
+                answerTextarea.addEventListener('input', saveAnswer);
+            }
+
+            updateButtons();
+        }
+
+        function renderSummary() {
+            // Salva a resposta da última pergunta
+            saveAnswer(); 
+            navButtons.style.display = 'none';
+
+            let summaryHtml = `
+                <div class="text-center py-4 border-b border-gray-200">
+                    <h2 class="text-3xl font-bold text-fuchsia-dark mb-2">Resultado do Quiz 🎉</h2>
+                    <p class="text-lg text-gray-700">Aqui estão todas as suas respostas salvas:</p>
+                </div>
+                <div class="mt-6 space-y-8">
+            `;
+
+            questionsData.forEach((q, index) => {
+                const answer = answers[index] || 'Nenhuma resposta registrada.';
+                
+                summaryHtml += `
+                    <div class="p-5 border-2 border-gray-100 rounded-lg shadow-sm">
+                        <p class="text-xl font-semibold text-pink-medium mb-2">
+                            ${q.id}. ${q.question}
+                        </p>
+                        <div class="border-l-4 border-fuchsia-dark pl-4 py-1 bg-gray-50">
+                            <p class="text-sm font-medium text-gray-800">Sua Resposta:</p>
+                            <p class="text-base text-gray-600 whitespace-pre-wrap">${answer}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            summaryHtml += `
+                </div>
+                <div class="text-center mt-8">
+                    <button onclick="clearStorageAndRestart()" class="bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-300 shadow-md">
+                        Limpar Respostas e Recomeçar
+                    </button>
+                </div>
+            `;
+
+            quizContainer.innerHTML = summaryHtml;
+        }
+
+        function clearStorageAndRestart() {
+            localStorage.removeItem(STORAGE_KEY);
+            answers = {};
+            currentQuestionIndex = 0;
+            navButtons.style.display = 'flex';
+            renderQuestion(currentQuestionIndex);
+        }
+
+        function updateButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questionsData.length - 1) {
+                nextBtn.textContent = 'Ver Respostas Finais';
+                nextBtn.classList.remove('bg-pink-medium', 'hover:bg-fuchsia-dark');
+                nextBtn.classList.add('bg-fuchsia-dark', 'hover:bg-pink-medium');
+            } else {
+                nextBtn.textContent = 'Próxima Pergunta';
+                nextBtn.classList.remove('bg-fuchsia-dark', 'hover:bg-pink-medium');
+                nextBtn.classList.add('bg-pink-medium', 'hover:bg-fuchsia-dark');
+            }
+        }
+
+        function handleNext() {
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion(currentQuestionIndex);
+            } else {
+                renderSummary();
+            }
+        }
+
+        function handlePrev() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
+            }
+        }
+
+        // Event Listeners
+        nextBtn.addEventListener('click', handleNext);
+        prevBtn.addEventListener('click', handlePrev);
+
+        // Iniciar o Quiz
+        // Tenta carregar a última pergunta respondida ou começa da primeira
+        const savedAnswers = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (savedAnswers && Object.keys(savedAnswers).length > 0) {
+            // Se houver respostas salvas, inicia na próxima pergunta após a última respondida
+            const lastIndex = Math.max(...Object.keys(savedAnswers).map(Number));
+            currentQuestionIndex = lastIndex < questionsData.length - 1 ? lastIndex + 1 : lastIndex;
+        }
+
+        renderQuestion(currentQuestionIndex);
+    </script>
+
+</body>
+</html>
