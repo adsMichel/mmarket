@@ -129,7 +129,7 @@
         <div class="scanner-line"></div>
       </div>
 
-      <div id="manual-input-container" class="hidden fixed bottom-40 left-0 right-0 z-50 text-center px-4">
+      <div id="manual-input-container" class=" fixed bottom-40 left-0 right-0 z-50 text-center px-4">
         <button id="btn-manual" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-green-700 transition">
           Inserir Manualmente
         </button>
@@ -550,8 +550,8 @@
 
       function fecharProductModal() {
         productModal.classList.add("hidden");
+        pararScanner();
         if (scannerArea.classList.contains("hidden")) {
-          pararScanner();
           mostrarTela("home");
         }
       }
