@@ -27,19 +27,20 @@
         height: 100%;
         object-fit: cover;
       }
-
+      /* Alterado */
       .scanner-overlay {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 280px;
-        height: 280px;
-        border: 3px solid #fcd34d;
-        border-radius: 24px;
-        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-        pointer-events: none;
-      }
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Ajustado para coincidir aproximadamente com a 'area' configurada no JS */
+  width: 70%;  /* Correspondente a 100% - (left 15% + right 15%) */
+  height: 50%; /* Correspondente a 100% - (top 25% + bottom 25%) */
+  border: 3px solid #fcd34d;
+  border-radius: 24px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
 
       .scanner-line {
         position: absolute;
@@ -313,29 +314,39 @@
     </div>
 
     <script>
-      // Configuração do QuaggaJS (mantida)
+      // Configuração do QuaggaJS (alterada)
       const config = {
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: document.querySelector("#interactive"),
-          constraints: {
-            width: 640,
-            height: 480,
-            facingMode: "environment",
-          },
-        },
-        decoder: {
-          readers: ["ean_reader", "ean_8_reader"],
-          multiple: false,
-        },
-        locate: true,
-        locator: {
-          patchSize: "medium",
-          halfSample: true,
-        },
-        frequency: 10,
-      };
+  inputStream: {
+    name: "Live",
+    type: "LiveStream",
+    target: document.querySelector("#interactive"),
+    constraints: {
+      width: 640,
+      height: 480,
+      facingMode: "environment",
+    },
+    // ÁREA DE LEITURA: Define onde o scanner deve focar
+    // top/right/left/bottom variam de 0% a 100%
+    area: { 
+      top: "25%",    // Ignora os 25% superiores
+      right: "15%",  // Ignora os 15% da direita
+      left: "15%",   // Ignora os 15% da esquerda
+      bottom: "25%"  // Ignora os 25% inferiores
+    },
+  },
+  // FREQUÊNCIA: Quantas vezes ele tenta ler por segundo.
+  // Diminuir para 3 ou 5 torna a leitura menos "desesperada".
+  frequency: 5, 
+  decoder: {
+    readers: ["ean_reader", "ean_8_reader"],
+    multiple: false,
+  },
+  locate: true,
+  locator: {
+    patchSize: "medium",
+    halfSample: true,
+  },
+};
 
       // Elementos de navegação e telas (mantidos)
       const homeScreen = document.getElementById("home-screen");
