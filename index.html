@@ -110,7 +110,7 @@
   <body class="h-screen overflow-hidden">
     <header id="main-header">
       <h2 class="ms-4 mt-8 text-2xl text-white/70">
-        Total 67: <span class="text-xl" id="valor-total-header">R$ 0,00</span>
+        Total 68: <span class="text-xl" id="valor-total-header">R$ 0,00</span>
       </h2>
     </header>
 
@@ -617,10 +617,8 @@
 
       function fecharProductModal() {
         productModal.classList.add("hidden");
-        if (scannerEmFuncionamento) {
-          pararScanner();
-          mostrarTela("home");
-        }
+        // Removido o pararScanner daqui, pois ele já foi parado ao detectar o código
+        mostrarTela("home");
       }
 
       function abrirListModal() {
@@ -635,27 +633,31 @@
       // --- FUNÇÕES DO SCANNER (mantidas) ---
 
       function pararScanner(callback) {
-        if (!scannerEmFuncionamento) return;
+        if (!scannerEmFuncionamento) {
+          if (callback) callback();
+          return;
+        }
+
         clearTimeout(timerEsperaLeitura);
         manualInputContainer.classList.add("hidden");
+        scannerEmFuncionamento = false; // Define como falso imediatamente para evitar chamadas duplas
 
-        // ... (lógica de Quagga.stop e tracks.stop)
-        Quagga.stop(function () {
-          const video = interactive.querySelector("video");
-          if (video && video.srcObject) {
-            video.srcObject.getTracks().forEach((track) => {
-              track.stop();
-            });
-            video.srcObject = null;
-          }
+        Quagga.stop();
 
-          codigoEncontrado = null;
-          interactive.innerHTML = "";
+        // Garante o encerramento da câmera acessando os tracks diretamente
+        const video = interactive.querySelector("video");
+        if (video && video.srcObject) {
+          const tracks = video.srcObject.getTracks();
+          tracks.forEach((track) => track.stop());
+          video.srcObject = null;
+        }
 
-          if (callback) callback();
-        });
+        // Limpa o conteúdo visual do scanner
+        interactive.innerHTML = "";
 
-        scannerEmFuncionamento = false;
+        if (callback && typeof callback === "function") {
+          callback();
+        }
       }
 
       function iniciarScanner() {
@@ -756,11 +758,11 @@
       document.addEventListener("DOMContentLoaded", () => {
         atualizarTotalELista();
 
-        // ... (Listeners btnLer, btnHome, closeModalBtn, closeListModalBtn, btnLimparLista)
         btnLer.addEventListener("click", () => {
           if (scannerEmFuncionamento) {
-            pararScanner();
-            mostrarTela("home");
+            pararScanner(() => {
+              mostrarTela("home");
+            });
           } else {
             iniciarScanner();
           }
