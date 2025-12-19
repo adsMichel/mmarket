@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Marry Market</title>
-    <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
     <link rel="stylesheet" href="styles.css" />
     <!-- SweetAlert 2 -->
     <link
@@ -26,12 +26,23 @@
       </h2>
       <div id="nome-produto" class="text-lg text-gray-100 font-medium mt-40 flex justify-center"></div>
     </header> -->
-    <div class="fixed top-10 left-0 right-0 flex justify-center z-20 pointer-events-none">
-  <div class="bg-gray-100/90 backdrop-blur-md text-white px-10 py-2 rounded-full shadow-2xl border border-white/10 flex items-center gap-3 pointer-events-auto">
-    <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Total</span>
-    <span id="valor-total-flutuante" class="text-green-400 font-extrabold text-md">R$ 0,00</span>
-  </div>
-</div>
+    <div
+      class="fixed top-10 left-0 right-0 flex justify-center z-20 pointer-events-none"
+    >
+      <div
+        class="bg-gray-100/90 backdrop-blur-md text-white px-10 py-2 rounded-full shadow-2xl border border-white/10 flex items-center gap-3 pointer-events-auto"
+      >
+        <span
+          class="text-[10px] uppercase tracking-widest text-gray-400 font-bold"
+          >Total75</span
+        >
+        <span
+          id="valor-total-flutuante"
+          class="text-green-400 font-extrabold text-md"
+          >R$ 0,00</span
+        >
+      </div>
+    </div>
 
     <div
       id="home-screen"
@@ -216,13 +227,30 @@
       </div>
     </div>
 
-    <div id="list-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center">
-      <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container">
+    <div
+      id="list-modal"
+      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center"
+    >
+      <div
+        class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container"
+      >
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold text-gray-800">Lista de Compras</h2>
-          <button class="close-list-button text-gray-400 hover:text-gray-600 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          <button
+            class="close-list-button text-gray-400 hover:text-gray-600 transition"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -390,7 +418,9 @@
               "bg-gray-50 p-3 rounded-xl shadow-sm flex justify-between items-center border border-gray-200";
             listItem.innerHTML = `
               <div>
-                  <p class="text-sm font-semibold text-gray-900">${produto.nome}</p>
+                  <p class="text-sm font-semibold text-gray-900">${
+                    produto.nome
+                  }</p>
                   <p class="text-xs text-gray-500">Unid. ${
                     produto.quantidade
                   } - ${formatarMoeda(produto.valorUnitario)}</p>
