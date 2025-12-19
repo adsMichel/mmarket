@@ -20,12 +20,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
   </head>
   <body class="h-screen overflow-hidden">
-    <header id="main-header">
-      <h2 class="ms-4 mt-4 text-xl text-white/70">
+    <!-- <header id="main-header">
+      <h2 class="ms-4 mt-4 text-xl text-white/80">
         TOTAL <span class="text-xl" id="valor-total-header">R$ 0,00</span>
       </h2>
       <div id="nome-produto" class="text-lg text-gray-100 font-medium mt-40 flex justify-center"></div>
-    </header>
+    </header> -->
+    <div class="fixed top-10 left-0 right-0 flex justify-center z-20 pointer-events-none">
+  <div class="bg-gray-100/90 backdrop-blur-md text-white px-10 py-2 rounded-full shadow-2xl border border-white/10 flex items-center gap-3 pointer-events-auto">
+    <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Total</span>
+    <span id="valor-total-flutuante" class="text-green-400 font-extrabold text-md">R$ 0,00</span>
+  </div>
+</div>
 
     <div
       id="home-screen"
