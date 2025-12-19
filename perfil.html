@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marry Market</title>
+    <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/satoshi');
+        body {
+            /* background-color: #fff; */
+            font-family: 'Satoshi', sans-serif;
+            color: #000;
+            background-image: url("food.webp");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+      .total-header {
+        /* Fundo transparente com leve gradiente preto */
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 70%,transparent);
+      }
+    </style>
+  </head>
+  <body class="h-screen overflow-hidden">
+    <header>
+        <h2 class="ms-4 mt-8 text-2xl text-white">Perfil</h2>
+    </header>
+    <footer>
+      <div class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-6">
+        <div class="flex justify-around items-center py-3 max-w-md mx-4 bg-white rounded-3xl">
+  
+          <button id="btn-home" class="flex flex-col items-center text-black/70 hover:text-black transition">
+            <div>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+            </div>
+            <span class="text-xs font-medium">Lista</span>
+          </button>
+  
+          <button id="btn-ler" class="flex flex-col items-center text-black/70 hover:text-black transition">
+              <div>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+              </svg>
+            </div>
+            <span class="text-xs font-medium">Ler</span>
+          </button>
+  
+          <button class="flex flex-col items-center text-black/70 hover:text-black transition">
+            <div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <span class="text-xs font-medium">Perfil</span>
+          </button>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

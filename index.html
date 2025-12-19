@@ -13,7 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
       body {
-        /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
         background-image: url("mary2.jpeg");
         background-size: cover;
         background-position: center;
@@ -116,10 +115,8 @@
     </style>
   </head>
   <body class="h-screen overflow-hidden">
-    <header
-      id="main-header"
-      class="total-header p-3 fixed top-0 left-0 right-0 z-10"
-    >
+
+    <header id="main-header" class="total-header p-3 fixed top-0 left-0 right-0 z-10">
       <div class="max-w-md mx-auto text-center">
         <p class="text-md font-semibold text-yellow-200">
           TOTAL: <span id="valor-total-header">R$ 0,00</span>
@@ -127,14 +124,8 @@
       </div>
     </header>
 
-    <div
-      id="home-screen"
-      class="h-full flex flex-col items-center justify-center p-6"
-    >
-      <div
-        id="nome-produto"
-        class="text-lg text-gray-100 font-medium mb-4"
-      ></div>
+    <div id="home-screen" class="h-full flex flex-col items-center justify-center p-6">
+      <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4"></div>
     </div>
 
     <div id="scanner-area" class="hidden fixed inset-0 w-full h-full">
@@ -148,52 +139,26 @@
         <div class="scanner-line"></div>
       </div>
 
-      <div
-        id="manual-input-container"
-        class="hidden fixed bottom-40 left-0 right-0 z-50 text-center px-4"
-      >
-        <button
-          id="btn-manual"
-          class="bg-purple-600 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-purple-700 transition"
-        >
+      <div id="manual-input-container" class="hidden fixed bottom-40 left-0 right-0 z-50 text-center px-4">
+        <button id="btn-manual" class="bg-purple-600 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-purple-700 transition">
           Inserir Manualmente
         </button>
       </div>
     </div>
 
-    <div
-      class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-6"
-    >
+    <div class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-6">
       <div class="flex justify-around items-end px-8 max-w-md mx-auto">
-        <button
-          id="btn-home"
-          class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
-        >
-          <div
-            class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
+        <button id="btn-home" class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition">
+          <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
           </div>
           <span class="text-xs font-medium">Lista</span>
         </button>
-        <button id="btn-ler" class="flex flex-col items-center gap-2 -mt-4">
-          <div
-            class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/50 hover:scale-105 transition transform"
-          >
-            <svg
-              class="w-6 h-6"
+        <button id="btn-ler" class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition">
+            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <svg class="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -209,11 +174,9 @@
           <span class="text-white text-xs font-medium">Ler</span>
         </button>
 
-        <button
-          class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
-        >
-        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
-            <svg
+        <button class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition">
+          <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <svg 
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -230,10 +193,11 @@
               <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
-          <span class="text-xs font-medium">Quiz</span>
+          <span class="text-xs font-medium">Perfil</span>
         </button>
       </div>
     </div>
+    
 
     <div
       id="product-modal"
