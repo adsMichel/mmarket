@@ -216,7 +216,7 @@
       </div>
     </div>
 
-    <div id="product-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
+    <div id="product-modal" class=" fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
       <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
         <div class="flex justify-end mb-2">
           <button class="close-button text-gray-400 hover:text-gray-600 transition">
@@ -504,7 +504,7 @@
           // MODO: Produto Conhecido (Histórico Encontrado)
           modalProductName.textContent = nome;
           modalProductName.className =
-            "text-white font-medium text-center bg-green-500 rounded-lg p-1";
+            "text-white font-medium text-center bg-green-500 rounded-lg p-2";
 
           // Cria o span de comparação de preço
           const comparisonSpan = document.createElement("span");
@@ -628,7 +628,7 @@
 
       function abrirModalManual() {
         abrirProductModal("Novo Produto", "MANUAL");
-        nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
+        // nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
       }
 
       // --- FUNÇÃO DE BUSCA NA API DE PRODUTOS (mantida) ---
