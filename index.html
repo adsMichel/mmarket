@@ -114,14 +114,8 @@
       </h2>
     </header>
 
-    <div
-      id="home-screen"
-      class="h-full flex flex-col items-center justify-center p-6"
-    >
-      <div
-        id="nome-produto"
-        class="text-lg text-gray-100 font-medium mb-4"
-      ></div>
+    <div id="home-screen" class="h-full flex flex-col items-center justify-center p-6">
+      <div id="nome-produto" class="text-lg text-gray-100 font-medium mb-4"></div>
     </div>
 
     <div id="scanner-area" class="hidden fixed inset-0 w-full h-full">
@@ -135,14 +129,8 @@
         <div class="scanner-line"></div>
       </div>
 
-      <div
-        id="manual-input-container"
-        class="hidden fixed bottom-30 left-0 right-0 z-50 text-center px-4"
-      >
-        <button
-          id="btn-manual"
-          class="bg-green-500 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-green-700 transition"
-        >
+      <div id="manual-input-container" class="hidden fixed bottom-40 left-0 right-0 z-50 text-center px-4">
+        <button id="btn-manual" class="bg-green-600 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-green-700 transition">
           Inserir Manualmente
         </button>
       </div>
@@ -228,104 +216,49 @@
       </div>
     </div>
 
-    <div
-      id="product-modal"
-      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center"
-    >
+    <div id="product-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
       <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
         <div class="flex justify-end mb-2">
-          <button
-            class="close-button text-gray-400 hover:text-gray-600 transition"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+          <button class="close-button text-gray-400 hover:text-gray-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
         </div>
 
         <div class="mb-4">
           <div class="bg-green-50 rounded-xl p-2 mb-4">
-            <p
-              id="modal-product-name"
-              class="text-green-900 font-medium text-center"
-            >
+            <p id="modal-product-name" class="text-green-900 font-medium text-center">
               Nome do Produto
             </p>
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >Quantidade</label
-              >
-              <input
-                type="number"
-                id="input-quantidade"
-                value="1"
-                min="1"
-                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-300 focus:outline-none transition"
-              />
+              <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
+              <input type="number" id="input-quantidade" value="1" min="1" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition"/>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >Valor (R$)</label
-              >
-              <input
-                type="number"
-                id="input-valor"
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-300 focus:outline-none transition"
-              />
+              <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
+              <input type="number" id="input-valor" placeholder="0.00" min="0" step="0.01" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:outline-none transition"/>
             </div>
           </div>
         </div>
 
-        <button
-          id="btn-adicionar"
-          class="w-full bg-gradient-to-r from-green-400 to-green-500 text-white py-3 rounded-xl font-semibold hover:from-green-500 hover:to-green-600 transition shadow-lg shadow-green-500/30"
-        >
+        <button id="btn-adicionar" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-semibold hover:from-green-700 hover:to-green-800 transition shadow-lg shadow-green-500/30">
           Adicionar Produto
         </button>
       </div>
     </div>
 
-    <div
-      id="list-modal"
-      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center"
-    >
-      <div
-        class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container"
-      >
+    <div id="list-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center">
+      <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold text-gray-800">Lista de Compras</h2>
-          <button
-            class="close-list-button text-gray-400 hover:text-gray-600 transition"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+          <button class="close-list-button text-gray-400 hover:text-gray-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -335,7 +268,7 @@
             id="lista-vazia-mensagem"
             class="bg-gray-100 p-4 rounded-xl shadow-inner text-center text-gray-500"
           >
-            A lista está vazia.
+            A lista está vazia. Comece a escanear!
           </li>
         </ul>
 
@@ -345,7 +278,7 @@
           <span class="text-lg font-bold text-gray-800">Total:</span>
           <span
             id="valor-total-modal"
-            class="text-xl font-extrabold text-green-500"
+            class="text-2xl font-extrabold text-green-600"
             >R$ 0,00</span
           >
         </div>
@@ -504,7 +437,7 @@
                         } x ${formatarMoeda(produto.valorUnitario)}</p>
                     </div>
                     <div class="text-right flex items-center gap-3">
-                        <p class="font-bold text-base text-green-500">${formatarMoeda(
+                        <p class="font-bold text-base text-green-600">${formatarMoeda(
                           produto.subtotal
                         )}</p>
                         <button data-index="${index}" class="btn-remover text-red-500 hover:text-red-700 transition">
@@ -571,7 +504,7 @@
       function abrirProductModal(nome, ean) {
         // Limpa classes e conteúdo anterior
         modalProductName.textContent = nome;
-        modalProductName.className = "text-green-900 font-medium text-center";
+        modalProductName.className = "text-green-900 font-medium text-center"; // Padrão
 
         // Remove qualquer span de comparação que possa ter sobrado
         const oldComparison = document.getElementById("price-comparison-span");
@@ -584,13 +517,14 @@
         if (precoAnterior !== undefined) {
           // MODO: Produto Conhecido (Histórico Encontrado)
           modalProductName.textContent = nome;
-          modalProductName.className = "text-blue font-medium text-center";
+          modalProductName.className =
+            "text-white font-medium text-center bg-green-600 rounded-lg p-1";
 
           // Cria o span de comparação de preço
           const comparisonSpan = document.createElement("span");
           comparisonSpan.id = "price-comparison-span";
           comparisonSpan.className =
-            "block text-xs font-semibold mt-1 text-green-500";
+            "block text-xs font-semibold mt-1 text-green-600";
           comparisonSpan.textContent = `Preço da última compra: ${formatarMoeda(
             precoAnterior
           )}`;
@@ -618,7 +552,6 @@
       function fecharProductModal() {
         productModal.classList.add("hidden");
         if (scannerArea.classList.contains("hidden")) {
-          pararScanner();
           mostrarTela("home");
         }
       }
@@ -663,7 +596,6 @@
 
         mostrarTela("scanner");
         interactive.innerHTML = "";
-        iniciarTimerManual();
 
         Quagga.init(config, function (err) {
           if (err) {
@@ -674,23 +606,21 @@
           }
           Quagga.start();
           scannerEmFuncionamento = true;
+          iniciarTimerManual();
         });
       }
 
       function iniciarTimerManual() {
+        // Define o tempo de espera em milissegundos (5 segundos)
         const TEMPO_ESPERA_MS = 5000;
+
+        // Limpa qualquer timer anterior para garantir que só haja um ativo
         clearTimeout(timerEsperaLeitura);
 
-        console.log("Timer iniciado: aguardando 5 segundos...");
-
         timerEsperaLeitura = setTimeout(() => {
-          console.log(
-            "Tentando mostrar botão manual. Scanner ativo?",
-            scannerEmFuncionamento
-          );
+          // Se o scanner ainda estiver funcionando após 5 segundos, mostra o botão
           if (scannerEmFuncionamento) {
             manualInputContainer.classList.remove("hidden");
-            console.log("Classe 'hidden' removida do container manual.");
           }
         }, TEMPO_ESPERA_MS);
       }
@@ -711,8 +641,10 @@
 
       function abrirModalManual() {
         abrirProductModal("Novo Produto", "MANUAL");
-        // nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
+        nomeProdutoEl.textContent = "Scanner Parado. Insira o produto.";
       }
+
+      // --- FUNÇÃO DE BUSCA NA API DE PRODUTOS (mantida) ---
 
       const API_KEY = "P7uKcTcma8P8GLzyw0ICeA"; // (Sua chave)
       const COSMOS_API_URL = "https://api.cosmos.bluesoft.com.br/gtins/";
