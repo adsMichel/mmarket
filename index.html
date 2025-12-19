@@ -4,16 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Marry Market</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
       body {
-        background-image: url("mary2.jpeg");
+        font-family: 'Satoshi', sans-serif;
+        background-image: url("grocery.webp");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -98,17 +96,10 @@
       }
 
       .total-header {
-        /* Fundo transparente com leve gradiente preto */
-        background: linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0.7),
-          rgba(0, 0, 0, 0.3) 70%,
-          transparent
-        );
+        /* background: linear-gradient(to bottom,rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 70%, transparent); */
       }
 
       .product-modal-container {
-        /* Container para a lista de produtos */
         max-height: 80vh;
         overflow-y: auto;
       }
@@ -116,12 +107,13 @@
   </head>
   <body class="h-screen overflow-hidden">
 
-    <header id="main-header" class="total-header p-3 fixed top-0 left-0 right-0 z-10">
-      <div class="max-w-md mx-auto text-center">
+    <header id="main-header">
+      <!-- <div class="max-w-md mx-auto text-center">
         <p class="text-md font-semibold text-yellow-200">
           TOTAL: <span id="valor-total-header">R$ 0,00</span>
         </p>
-      </div>
+      </div> -->
+      <h2 class="ms-4 mt-8 text-2xl text-white">Total: <span id="valor-total-header">R$ 0,00</span></h2>
     </header>
 
     <div id="home-screen" class="h-full flex flex-col items-center justify-center p-6">
