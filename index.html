@@ -503,17 +503,13 @@
         if (precoAnterior !== undefined) {
           // MODO: Produto Conhecido (Histórico Encontrado)
           modalProductName.textContent = nome;
-          modalProductName.className =
-            "text-white font-medium text-center bg-green-500 rounded-lg p-2";
+          modalProductName.className = "text-black font-medium text-center bg-green-500 rounded-lg p-2";
 
           // Cria o span de comparação de preço
           const comparisonSpan = document.createElement("span");
           comparisonSpan.id = "price-comparison-span";
-          comparisonSpan.className =
-            "block text-xs font-semibold mt-1 text-green-500";
-          comparisonSpan.textContent = `Preço da última compra: ${formatarMoeda(
-            precoAnterior
-          )}`;
+          comparisonSpan.className = "block text-xs font-semibold mt-1 text-green-500";
+          comparisonSpan.textContent = `Preço da última compra: ${formatarMoeda(precoAnterior)}`;
 
           // Insere o span abaixo do input de valor
           const valorDiv = document.getElementById("input-valor").parentNode;
