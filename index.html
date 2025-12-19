@@ -129,7 +129,7 @@
         <div class="scanner-line"></div>
       </div>
 
-      <div id="manual-input-container" class="hidden fixed bottom-40 left-0 right-0 z-50 text-center px-4">
+      <div id="manual-input-container" class="hidden fixed bottom-30 left-0 right-0 z-50 text-center px-4">
         <button id="btn-manual" class="bg-green-500 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-green-700 transition">
           Inserir Manualmente
         </button>
@@ -490,7 +490,7 @@
       function abrirProductModal(nome, ean) {
         // Limpa classes e conteúdo anterior
         modalProductName.textContent = nome;
-        // modalProductName.className = "text-green-900 font-medium text-center";
+        modalProductName.className = "text-pink-900 font-medium text-center";
 
         // Remove qualquer span de comparação que possa ter sobrado
         const oldComparison = document.getElementById("price-comparison-span");
@@ -503,7 +503,7 @@
         if (precoAnterior !== undefined) {
           // MODO: Produto Conhecido (Histórico Encontrado)
           modalProductName.textContent = nome;
-          modalProductName.className = "text-black font-medium text-center bg-green-500 rounded-lg p-2";
+          modalProductName.className = "text-blue font-medium text-center bg-green-500 rounded-lg p-2";
 
           // Cria o span de comparação de preço
           const comparisonSpan = document.createElement("span");
