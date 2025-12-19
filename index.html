@@ -130,7 +130,7 @@
       </div>
 
       <div id="manual-input-container" class="hidden fixed bottom-40 left-0 right-0 z-50 text-center px-4">
-        <button id="btn-manual" class="bg-purple-600 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-purple-700 transition">
+        <button id="btn-manual" class="bg-green-500 text-white font-semibold py-3 px-6 rounded-full shadow-xl hover:bg-purple-700 transition">
           Inserir Manualmente
         </button>
       </div>
@@ -216,7 +216,7 @@
       </div>
     </div>
 
-    <div id="product-modal" class=" fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
+    <div id="product-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
       <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
         <div class="flex justify-end mb-2">
           <button class="close-button text-gray-400 hover:text-gray-600 transition">
@@ -264,30 +264,18 @@
         </div>
 
         <ul id="lista-produtos" class="space-y-3 mb-4">
-          <li
-            id="lista-vazia-mensagem"
-            class="bg-gray-100 p-4 rounded-xl shadow-inner text-center text-gray-500"
-          >
-            A lista está vazia. Comece a escanear!
+          <li id="lista-vazia-mensagem" class="bg-gray-100 p-4 rounded-xl shadow-inner text-center text-gray-500">
+            A lista está vazia.
           </li>
         </ul>
 
-        <div
-          class="flex justify-between items-center pt-3 border-t border-gray-200"
-        >
+        <div class="flex justify-between items-center pt-3 border-t border-gray-200">
           <span class="text-lg font-bold text-gray-800">Total:</span>
-          <span
-            id="valor-total-modal"
-            class="text-2xl font-extrabold text-purple-600"
-            >R$ 0,00</span
+          <span id="valor-total-modal" class="text-xl font-extrabold text-green-500">R$ 0,00</span
           >
         </div>
 
-        <button
-          id="btn-limpar-lista"
-          class="mt-4 w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition disabled:opacity-50"
-          disabled
-        >
+        <button id="btn-limpar-lista" class="mt-4 w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition disabled:opacity-50" disabled>
           Limpar Lista
         </button>
       </div>
@@ -334,9 +322,7 @@
       const btnLer = document.getElementById("btn-ler");
       const btnHome = document.getElementById("btn-home");
       const nomeProdutoEl = document.getElementById("nome-produto");
-      const manualInputContainer = document.getElementById(
-        "manual-input-container"
-      );
+      const manualInputContainer = document.getElementById("manual-input-container");
       const btnManual = document.getElementById("btn-manual");
 
       // Elementos do DOM do Modal de Inserção (mantidos)
@@ -552,6 +538,7 @@
       function fecharProductModal() {
         productModal.classList.add("hidden");
         if (scannerArea.classList.contains("hidden")) {
+          pararScanner();
           mostrarTela("home");
         }
       }
