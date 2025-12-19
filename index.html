@@ -4,13 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Marry Market</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css"/>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
     <style>
       body {
-        font-family: 'Satoshi', sans-serif;
+        font-family: "Satoshi", sans-serif;
         background-image: url("grocery.webp");
         background-size: cover;
         background-position: center;
@@ -29,18 +32,18 @@
       }
       /* Alterado */
       .scanner-overlay {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  /* Ajustado para coincidir aproximadamente com a 'area' configurada no JS */
-  width: 70%;  /* Correspondente a 100% - (left 15% + right 15%) */
-  height: 50%; /* Correspondente a 100% - (top 25% + bottom 25%) */
-  border: 3px solid #fcd34d;
-  border-radius: 24px;
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
-  pointer-events: none;
-}
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /* Ajustado para coincidir aproximadamente com a 'area' configurada no JS */
+        width: 70%; /* Correspondente a 100% - (left 15% + right 15%) */
+        height: 50%; /* Correspondente a 100% - (top 25% + bottom 25%) */
+        border: 3px solid #fcd34d;
+        border-radius: 24px;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+      }
 
       .scanner-line {
         position: absolute;
@@ -81,6 +84,7 @@
         border-bottom: none;
         border-radius: 0 24px 0 0;
       }
+
       .corner-bl {
         bottom: -2px;
         left: -2px;
@@ -88,16 +92,13 @@
         border-top: none;
         border-radius: 0 0 0 24px;
       }
+
       .corner-br {
         bottom: -2px;
         right: -2px;
         border-left: none;
         border-top: none;
         border-radius: 0 0 24px 0;
-      }
-
-      .total-header {
-        /* background: linear-gradient(to bottom,rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3) 70%, transparent); */
       }
 
       .product-modal-container {
@@ -107,14 +108,10 @@
     </style>
   </head>
   <body class="h-screen overflow-hidden">
-
     <header id="main-header">
-      <!-- <div class="max-w-md mx-auto text-center">
-        <p class="text-md font-semibold text-yellow-200">
-          TOTAL: <span id="valor-total-header">R$ 0,00</span>
-        </p>
-      </div> -->
-      <h2 class="ms-4 mt-8 text-2xl text-white">Total: <span class="text-xl" id="valor-total-header">R$ 0,00</span></h2>
+      <h2 class="ms-4 mt-8 text-2xl text-white">
+        Total: <span class="text-xl" id="valor-total-header">R$ 0,00</span>
+      </h2>
     </header>
 
     <div id="home-screen" class="h-full flex flex-col items-center justify-center p-6">
@@ -139,19 +136,42 @@
       </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-6">
+    <div
+      class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-6"
+    >
       <div class="flex justify-around items-end px-8 max-w-md mx-auto">
-        <button id="btn-home" class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition">
-          <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        <button
+          id="btn-home"
+          class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
+        >
+          <div
+            class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
             </svg>
           </div>
           <span class="text-xs font-medium">Lista</span>
         </button>
-        <button id="btn-ler" class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition">
-            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
-            <svg class="w-6 h-6"
+        <button
+          id="btn-ler"
+          class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
+        >
+          <div
+            class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
+          >
+            <svg
+              class="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -167,9 +187,25 @@
           <span class="text-white text-xs font-medium">Ler</span>
         </button>
 
-        <a href="perfil.html" class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition">
-          <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6" >
+        <a
+          href="perfil.html"
+          class="flex flex-col items-center gap-2 text-white/70 hover:text-white transition"
+        >
+          <div
+            class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-6 h-6"
+            >
               <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
 
               <circle cx="12" cy="7" r="4" />
@@ -179,106 +215,50 @@
         </a>
       </div>
     </div>
-    
 
-    <div
-      id="product-modal"
-      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center"
-    >
+    <div id="product-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-start justify-center">
       <div class="bg-white rounded-3xl w-full max-w-md p-5 mt-4">
         <div class="flex justify-end mb-2">
-          <button
-            class="close-button text-gray-400 hover:text-gray-600 transition"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+          <button class="close-button text-gray-400 hover:text-gray-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
         </div>
 
         <div class="mb-4">
-          <div class="bg-purple-50 rounded-xl p-2 mb-4">
-            <p
-              id="modal-product-name"
-              class="text-purple-900 font-medium text-center"
-            >
+          <div class="bg-green-50 rounded-xl p-2 mb-4">
+            <p id="modal-product-name" class="text-green-900 font-medium text-center">
               Nome do Produto
             </p>
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >Quantidade</label
-              >
-              <input
-                type="number"
-                id="input-quantidade"
-                value="1"
-                min="1"
-                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
-              />
+              <label class="block text-sm font-medium text-gray-700 mb-2">Quantidade</label>
+              <input type="number" id="input-quantidade" value="1" min="1" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"/>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >Valor (R$)</label
-              >
-              <input
-                type="number"
-                id="input-valor"
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"
-              />
+              <label class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
+              <input type="number" id="input-valor" placeholder="0.00" min="0" step="0.01" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition"/>
             </div>
           </div>
         </div>
 
-        <button
-          id="btn-adicionar"
-          class="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition shadow-lg shadow-purple-500/30"
-        >
+        <button id="btn-adicionar" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-purple-800 transition shadow-lg shadow-purple-500/30">
           Adicionar Produto
         </button>
       </div>
     </div>
 
-    <div
-      id="list-modal"
-      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center"
-    >
-      <div
-        class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container"
-      >
+    <div id="list-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 flex p-4 items-end justify-center sm:items-center">
+      <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-5 product-modal-container">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold text-gray-800">Lista de Compras</h2>
-          <button
-            class="close-list-button text-gray-400 hover:text-gray-600 transition"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
+          <button class="close-list-button text-gray-400 hover:text-gray-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -316,37 +296,37 @@
     <script>
       // Configuração do QuaggaJS (alterada)
       const config = {
-  inputStream: {
-    name: "Live",
-    type: "LiveStream",
-    target: document.querySelector("#interactive"),
-    constraints: {
-      width: 640,
-      height: 480,
-      facingMode: "environment",
-    },
-    // ÁREA DE LEITURA: Define onde o scanner deve focar
-    // top/right/left/bottom variam de 0% a 100%
-    area: { 
-      top: "25%",    // Ignora os 25% superiores
-      right: "15%",  // Ignora os 15% da direita
-      left: "15%",   // Ignora os 15% da esquerda
-      bottom: "25%"  // Ignora os 25% inferiores
-    },
-  },
-  // FREQUÊNCIA: Quantas vezes ele tenta ler por segundo.
-  // Diminuir para 3 ou 5 torna a leitura menos "desesperada".
-  frequency: 5, 
-  decoder: {
-    readers: ["ean_reader", "ean_8_reader"],
-    multiple: false,
-  },
-  locate: true,
-  locator: {
-    patchSize: "medium",
-    halfSample: true,
-  },
-};
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector("#interactive"),
+          constraints: {
+            width: 640,
+            height: 480,
+            facingMode: "environment",
+          },
+          // ÁREA DE LEITURA: Define onde o scanner deve focar
+          // top/right/left/bottom variam de 0% a 100%
+          area: {
+            top: "25%", // Ignora os 25% superiores
+            right: "15%", // Ignora os 15% da direita
+            left: "15%", // Ignora os 15% da esquerda
+            bottom: "25%", // Ignora os 25% inferiores
+          },
+        },
+        // FREQUÊNCIA: Quantas vezes ele tenta ler por segundo.
+        // Diminuir para 3 ou 5 torna a leitura menos "desesperada".
+        frequency: 5,
+        decoder: {
+          readers: ["ean_reader", "ean_8_reader"],
+          multiple: false,
+        },
+        locate: true,
+        locator: {
+          patchSize: "medium",
+          halfSample: true,
+        },
+      };
 
       // Elementos de navegação e telas (mantidos)
       const homeScreen = document.getElementById("home-screen");
@@ -786,8 +766,8 @@
         });
 
         btnManual.addEventListener("click", () => {
-            pararScanner();
-            abrirModalManual();
+          pararScanner();
+          abrirModalManual();
         });
 
         mostrarTela("home");
