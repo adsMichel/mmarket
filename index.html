@@ -24,7 +24,10 @@
       <h2 class="ms-4 mt-4 text-xl text-white/80">
         TOTAL <span class="text-xl" id="valor-total-header">R$ 0,00</span>
       </h2>
-      <div id="nome-produto" class="text-lg text-gray-100 font-medium mt-40 flex justify-center"></div>
+      <div
+        id="nome-produto"
+        class="text-lg text-gray-100 font-medium mt-40 flex justify-center"
+      ></div>
     </header>
 
     <div
@@ -335,6 +338,8 @@
       let scannerEmFuncionamento = false;
       let codigoEncontrado = null;
       let timerEsperaLeitura;
+      let leiturasBuffer = [];
+      const QUANTIDADE_PARA_VALIDAR = 3;
 
       // Chave do localStorage para a lista de compras (mantida)
       const STORAGE_KEY = "listaDeProdutos";
@@ -401,7 +406,9 @@
               "bg-gray-50 p-3 rounded-xl shadow-sm flex justify-between items-center border border-gray-200";
             listItem.innerHTML = `
               <div>
-                  <p class="text-sm font-semibold text-gray-900">${produto.nome}</p>
+                  <p class="text-sm font-semibold text-gray-900">${
+                    produto.nome
+                  }</p>
                   <p class="text-xs text-gray-500">Unid. ${
                     produto.quantidade
                   } - ${formatarMoeda(produto.valorUnitario)}</p>
@@ -470,10 +477,6 @@
         }
       }
 
-      /** * Função MODIFICADA:
-       * 1. Verifica histórico.
-       * 2. Aplica cor roxa e mensagem se o EAN estiver no histórico.
-       */
       function abrirProductModal(nome, ean) {
         // Limpa classes e conteúdo anterior
         modalProductName.textContent = nome;
@@ -569,6 +572,8 @@
       function iniciarScanner() {
         if (scannerEmFuncionamento) return;
 
+        leiturasBuffer = [];
+        codigoEncontrado = null;
         mostrarTela("scanner");
         interactive.innerHTML = "";
 
@@ -604,13 +609,34 @@
       Quagga.onDetected(function (data) {
         const codigo = data.codeResult.code;
 
-        if (codigo && codigo.length === 13 && codigo !== codigoEncontrado) {
-          codigoEncontrado = codigo;
-          clearTimeout(timerEsperaLeitura);
-          manualInputContainer.classList.add("hidden");
-          pararScanner();
-          mostrarTela("home");
-          buscarProduto(codigo);
+        if (codigo && codigo.length === 13) {
+          // 2. Adiciona ao buffer de leituras recentes
+          leiturasBuffer.push(codigo);
+
+          // 3. Mantém apenas as últimas X leituras
+          if (leiturasBuffer.length > QUANTIDADE_PARA_VALIDAR) {
+            leiturasBuffer.shift();
+          }
+
+          // 4. Verifica se todas as leituras no buffer são idênticas ao código atual
+          const leituraEstavel = leiturasBuffer.every((c) => c === codigo);
+
+          if (
+            leituraEstavel &&
+            leiturasBuffer.length === QUANTIDADE_PARA_VALIDAR
+          ) {
+            // Só entra aqui se o código for lido corretamente 3 vezes seguidas
+            if (codigo !== codigoEncontrado) {
+              codigoEncontrado = codigo;
+              leiturasBuffer = []; // Limpa o buffer para a próxima leitura
+
+              clearTimeout(timerEsperaLeitura);
+              manualInputContainer.classList.add("hidden");
+              pararScanner();
+              mostrarTela("home");
+              buscarProduto(codigo);
+            }
+          }
         }
       });
 
