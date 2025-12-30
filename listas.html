@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marry Market</title>
+  <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+  <style>
+    @import url('https://fonts.cdnfonts.com/css/satoshi');
+
+    body {
+      background-color: #fff;
+      font-family: 'Satoshi', sans-serif;
+      color: #000;
+      /* background-image: url("food.webp"); */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  </style>
+</head>
+
+<body class="h-screen flex flex-col relative overflow-hidden">
+  <header>
+    <h2 class="ms-4 mt-8 text-2xl text-black/70">Minhas Listas</h2>
+  </header>
+
+  <main class="flex-1 overflow-y-auto p-2">
+    <ul id="container-listas" class="flex flex-col gap-4">
+
+      <li class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+        <h3 class="text-gray-800 font-medium text-sm mb-2">Churrasco da Clara</h3>
+
+        <div class="flex items-center gap-4">
+          <div class="flex-1 bg-gray-100 rounded-full h-3">
+            <div class="bg-green-500 h-3 rounded-full" style="width: 65%"></div>
+          </div>
+
+          <span class="text-xs font-bold text-gray-500 whitespace-nowrap">15/20</span>
+        </div>
+      </li>
+      <li class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+        <h3 class="text-gray-800 font-medium text-sm mb-2">Compra semanal</h3>
+
+        <div class="flex items-center gap-4">
+          <div class="flex-1 bg-gray-100 rounded-full h-3">
+            <div class="bg-green-500 h-3 rounded-full" style="width: 55%"></div>
+          </div>
+
+          <span class="text-xs font-bold text-gray-500 whitespace-nowrap">8/15</span>
+        </div>
+      </li>
+
+    </ul>
+  </main>
+
+  <button id="btn-nova-lista" class="fixed bottom-10 right-6 w-16 h-16 bg-sky-600 text-white rounded-full shadow-2xl shadow-green-900/20 hover:bg-green-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center z-50">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+      class="w-8 h-8">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+  </button>
+
+</body>
+
+</html>
