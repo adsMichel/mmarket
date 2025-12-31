@@ -109,6 +109,12 @@ function iniciarScanner() {
           height: 480,
           facingMode: "environment", // Força câmera traseira
         },
+        area: {
+            top: "35%",    // Centraliza verticalmente (igual ao novo CSS)
+            bottom: "35%", 
+            left: "10%",   // Abre mais para as laterais (ideal para EAN-13)
+            right: "10%",
+        },
       },
       locator: {
         patchSize: "medium", // Equilíbrio entre velocidade e precisão
