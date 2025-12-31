@@ -73,21 +73,42 @@ window.removerItem = (index) => {
 // --- LÓGICA DO SCANNER ---
 
 function iniciarScanner() {
+    console.log("iniciado");
     if (scannerAtivo) return;
-    scannerContainer.classList.remove("hidden");
-    scannerAtivo = true;
+
+    // Garante que o container esteja visível antes de iniciar
+    const container = document.getElementById("scanner-container");
+    container.classList.remove("hidden");
 
     Quagga.init({
         inputStream: {
             name: "Live",
             type: "LiveStream",
-            target: document.querySelector("#interactive"),
-            constraints: { facingMode: "environment" }
+            target: document.querySelector("#interactive"), // Onde a câmera aparece
+            constraints: {
+                width: { min: 640 },
+                height: { min: 480 },
+                facingMode: "environment" // Força a câmera traseira no celular
+            },
         },
-        decoder: { readers: ["ean_reader", "ean_8_reader"] }
-    }, (err) => {
-        if (err) return console.error(err);
+        decoder: {
+            readers: ["ean_reader", "ean_8_reader"]
+        },
+        locate: true
+    }, function(err) {
+        if (err) {
+            console.error("Erro ao iniciar Quagga:", err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro na Câmera',
+                text: 'Não foi possível acessar a câmera. Verifique as permissões ou se está usando HTTPS.',
+            });
+            container.classList.add("hidden");
+            return;
+        }
+        console.log("Scanner iniciado com sucesso");
         Quagga.start();
+        scannerAtivo = true;
     });
 }
 

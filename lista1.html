@@ -2,51 +2,62 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Marry Market - Lista de Compras</title>
-  <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      background-color: #f8fafc; /* Um cinza bem claro para destacar os cards */
-      font-family: 'Satoshi', sans-serif;
-      color: #1e293b;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marry Market - Lista de Compras</title>
+    <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            /* Um cinza bem claro para destacar os cards */
+            font-family: 'Satoshi', sans-serif;
+            color: #1e293b;
+        }
+    </style>
 </head>
 
 <body class="h-screen flex flex-col relative overflow-hidden bg-slate-50">
-  
-  <header class="bg-white border-b border-gray-100 p-6">
-    <h2 class="text-2xl font-bold text-sky-900">Churrasco da Clara</h2>
-  </header>
 
-  <main class="flex-1 overflow-y-auto">
-    <div id="scanner-container" class="hidden relative w-full h-64 bg-black">
-        <div id="interactive" class="viewport h-full w-full"></div>
-        <button id="btn-cancelar-scan" class="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-md text-xs">Fechar X</button>
-    </div>
+    <header class="bg-white border-b border-gray-100 p-6">
+        <h2 class="text-2xl font-bold text-sky-900">Churrasco da Clara</h2>
+    </header>
 
-    <ul id="container-listas" class="flex flex-col pb-24">
+    <main class="flex-1 overflow-y-auto">
+        <div id="scanner-container" class="hidden relative w-full h-64 bg-black">
+            <div id="interactive" class="viewport h-full w-full">
+            </div>
+            <button id="btn-cancelar-scan"
+                class="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-md text-xs z-10">
+                Fechar X
+            </button>
+        </div>
+
+        <ul id="container-listas" class="flex flex-col pb-24">
         </ul>
-  </main>
+    </main>
 
-  <button id="btn-ler-barcode" class="fixed bottom-24 right-6 w-16 h-16 bg-sky-600 text-white rounded-full shadow-2xl hover:bg-sky-700 flex items-center justify-center z-50">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
-      <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12h1.5m-4.5 3h1.5m-4.5 3h1.5m-4.5-6H13.5m3 3H18m-3 3H18" />
-    </svg>
-  </button>
+    <button id="btn-ler-barcode"
+        class="fixed bottom-24 right-6 w-16 h-16 bg-sky-600 text-white rounded-full shadow-2xl hover:bg-sky-700 flex items-center justify-center z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+            class="w-8 h-8">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.5 12h1.5m-4.5 3h1.5m-4.5 3h1.5m-4.5-6H13.5m3 3H18m-3 3H18" />
+        </svg>
+    </button>
 
-  <footer class="bg-white border-t border-gray-200 p-6 flex justify-between items-center shadow-lg z-40">
-    <span class="text-gray-500 font-semibold text-sm">TOTAL</span>
-    <span id="valor-total-footer" class="text-2xl font-black text-sky-900">R$ 0,00</span>
-  </footer>
+    <footer class="bg-white border-t border-gray-200 p-6 flex justify-between items-center shadow-lg z-40">
+        <span class="text-gray-500 font-semibold text-sm">TOTAL</span>
+        <span id="valor-total-footer" class="text-2xl font-black text-sky-900">R$ 0,00</span>
+    </footer>
 
-  <script src="novoScript.js"></script>
+    <script src="novoScript.js"></script>
 
 </body>
+
 </html>
