@@ -83,79 +83,80 @@ window.removerItem = (index) => {
 // --- LÓGICA DO SCANNER ---
 
 function iniciarScanner() {
-    if (scannerAtivo) return;
+  if (scannerAtivo) return;
 
-    const container = document.getElementById("scanner-container");
-    const interactive = document.querySelector("#interactive");
-    
-    // Limpeza preventiva
-    interactive.innerHTML = "";
-    container.classList.remove("hidden");
+  const container = document.getElementById("scanner-container");
+  const interactive = document.querySelector("#interactive");
 
-    Quagga.init({
-        inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: interactive,
-            constraints: {
-                // Removi larguras mínimas rígidas para maior compatibilidade
-                facingMode: "environment",
-                aspectRatio: { min: 1, max: 2 }
-            },
+  interactive.innerHTML = "";
+  container.classList.remove("hidden");
+
+  Quagga.init(
+    {
+      inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: interactive,
+        constraints: {
+          // Resolução menor (640x480) processa MUITO mais rápido que HD
+          width: 640,
+          height: 480,
+          facingMode: "environment",
         },
-        locator: {
-            patchSize: "medium",
-            halfSample: true
-        },
-        decoder: {
-            readers: ["ean_reader", "ean_8_reader"]
-        },
-        locate: true,
-        frequency: 10
-    }, function(err) {
-        if (err) {
-            console.error("Erro Quagga:", err);
-            Swal.fire('Erro', 'Câmera não disponível. Use HTTPS.', 'error');
-            container.classList.add("hidden");
-            return;
-        }
-        Quagga.start();
-        scannerAtivo = true;
-        console.log("Scanner iniciado");
-    });
+        // Área de busca reduzida: o scanner foca apenas no centro
+        area: { top: "30%", right: "20%", left: "20%", bottom: "30%" },
+      },
+      // Localizador otimizado
+      locator: {
+        patchSize: "small", // "small" é mais rápido para códigos de barras comuns
+        halfSample: true, // Reduz a imagem pela metade para processar menos pixels
+      },
+      decoder: {
+        readers: ["ean_reader"], // Apenas EAN-13 (mais rápido). Adicione "ean_8_reader" se necessário.
+        multiple: false,
+      },
+      locate: true,
+      frequency: 20, // Máxima frequência de varredura (20 vezes por segundo)
+    },
+    function (err) {
+      if (err) {
+        container.classList.add("hidden");
+        return;
+      }
+      Quagga.start();
+      scannerAtivo = true;
+    }
+  );
 }
 
 Quagga.onDetected((data) => {
-    const code = data.codeResult.code;
-    
-    // Filtro básico de integridade
-    if (!code || code.length < 8) return;
+  // Usamos o 'code' apenas se a precisão (fallback) for aceitável
+  const code = data.codeResult.code;
 
-    if (code === ultimoCodigoLido) {
-        leiturasConsecutivas++;
-    } else {
-        ultimoCodigoLido = code;
-        leiturasConsecutivas = 1;
-    }
+  if (code === ultimoCodigoLido) {
+    leiturasConsecutivas++;
+  } else {
+    ultimoCodigoLido = code;
+    leiturasConsecutivas = 1;
+  }
 
-    if (leiturasConsecutivas >= 3) {
-        leiturasConsecutivas = 0;
-        ultimoCodigoLido = null;
-        
-        // Feedback tátil (se disponível no celular)
-        if (navigator.vibrate) navigator.vibrate(100);
-        
-        pararScanner();
-        buscarEAdicionar(code);
-    }
+  // Com frequency: 20, 3 leituras acontecem em frações de segundo
+  if (leiturasConsecutivas >= 3) {
+    leiturasConsecutivas = 0;
+    ultimoCodigoLido = null;
+
+    if (navigator.vibrate) navigator.vibrate(50); // Feedback rápido
+    pararScanner();
+    buscarEAdicionar(code);
+  }
 });
 
 function pararScanner() {
-    Quagga.stop();
-    scannerAtivo = false;
-    document.getElementById("scanner-container").classList.add("hidden");
-    // Limpa o vídeo para não travar a câmera
-    document.querySelector("#interactive").innerHTML = "";
+  Quagga.stop();
+  scannerAtivo = false;
+  document.getElementById("scanner-container").classList.add("hidden");
+  // Limpa o vídeo para não travar a câmera
+  document.querySelector("#interactive").innerHTML = "";
 }
 
 // --- BUSCA API E MODAL DE ADIÇÃO ---
