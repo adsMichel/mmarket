@@ -190,7 +190,7 @@ async function buscarEAdicionar(ean) {
     const ultimoPreco = historico[ean] || "";
 
     Swal.fire({
-      title: "Confirmar Produto",
+      title: nome,
       // Define a posição como 'top' e adicionamos uma margem personalizada
       position: "top",
       customClass: {
@@ -199,7 +199,7 @@ async function buscarEAdicionar(ean) {
         htmlContainer: "mt-2",
       },
       html: `
-    <p class="text-xs text-gray-400 uppercase font-bold mb-3 tracking-wide">${nome}</p>
+    
     
     <div class="flex gap-2 px-2 mb-2">
         <div class="flex-1">
