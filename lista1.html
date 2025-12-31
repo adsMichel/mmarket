@@ -20,7 +20,7 @@
     </style>
 </head>
 
-<body class="h-screen flex flex-col relative overflow-hidden bg-slate-50">
+<body class="h-[100dvh] flex flex-col relative overflow-hidden bg-slate-50">
 
     <header class="bg-white border-b border-gray-100 p-6">
         <h2 class="text-2xl font-bold text-sky-900">Churrasco da Clara</h2>
@@ -36,7 +36,7 @@
             </button>
         </div>
 
-        <ul id="container-listas" class="flex flex-col pb-24">
+        <ul id="container-listas" class="flex flex-col">
         </ul>
     </main>
 
@@ -51,8 +51,8 @@
         </svg>
     </button>
 
-    <footer class="bg-white border-t border-gray-200 p-6 flex justify-between items-center shadow-lg z-40">
-        <span class="text-gray-500 font-semibold text-sm">TOTAL</span>
+    <footer class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-6 pb-8 flex justify-between items-center shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40">
+        <span class="text-gray-500 font-semibold text-sm uppercase">Total</span>
         <span id="valor-total-footer" class="text-2xl font-black text-sky-900">R$ 0,00</span>
     </footer>
 
