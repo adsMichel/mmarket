@@ -86,6 +86,11 @@ window.removerItem = (index) => {
 function iniciarScanner() {
   if (scannerAtivo) return;
 
+  window.scrollTo({
+        top: 0,
+        behavior: 'instant' // 'instant' garante que não haja atraso na rolagem
+    });
+
   const container = document.getElementById("scanner-container");
   const interactive = document.querySelector("#interactive");
 
