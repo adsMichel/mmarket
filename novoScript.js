@@ -7,6 +7,7 @@ const STORAGE_HISTORY_KEY = "historicoPrecos";
 let scannerAtivo = false;
 
 // --- NOVAS VARIÁVEIS DE CONTROLE DE LEITURA ---
+
 let leiturasConsecutivas = 0;
 let ultimoCodigoLido = null;
 const LEITURAS_NECESSARIAS = 3; // Número de vezes para validar
@@ -83,80 +84,76 @@ window.removerItem = (index) => {
 // --- LÓGICA DO SCANNER ---
 
 function iniciarScanner() {
-  if (scannerAtivo) return;
+    if (scannerAtivo) return;
 
-  const container = document.getElementById("scanner-container");
-  const interactive = document.querySelector("#interactive");
+    const container = document.getElementById("scanner-container");
+    const interactive = document.querySelector("#interactive");
+    
+    interactive.innerHTML = ""; // Limpa qualquer resíduo
+    container.classList.remove("hidden");
 
-  interactive.innerHTML = "";
-  container.classList.remove("hidden");
-
-  Quagga.init(
-    {
-      inputStream: {
-        name: "Live",
-        type: "LiveStream",
-        target: interactive,
-        constraints: {
-          // Resolução menor (640x480) processa MUITO mais rápido que HD
-          width: 640,
-          height: 480,
-          facingMode: "environment",
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: interactive,
+            constraints: {
+                width: 640,
+                height: 480,
+                facingMode: "environment" // Força câmera traseira
+            },
         },
-        // Área de busca reduzida: o scanner foca apenas no centro
-        area: { top: "30%", right: "20%", left: "20%", bottom: "30%" },
-      },
-      // Localizador otimizado
-      locator: {
-        patchSize: "small", // "small" é mais rápido para códigos de barras comuns
-        halfSample: true, // Reduz a imagem pela metade para processar menos pixels
-      },
-      decoder: {
-        readers: ["ean_reader"], // Apenas EAN-13 (mais rápido). Adicione "ean_8_reader" se necessário.
-        multiple: false,
-      },
-      locate: true,
-      frequency: 10, // Máxima frequência de varredura (20 vezes por segundo)
-    },
-    function (err) {
-      if (err) {
-        container.classList.add("hidden");
-        return;
-      }
-      Quagga.start();
-      scannerAtivo = true;
-    }
-  );
+        locator: {
+            patchSize: "medium", // Equilíbrio entre velocidade e precisão
+            halfSample: true      // Processa menos pixels (mais rápido)
+        },
+        decoder: {
+            readers: ["ean_reader", "ean_8_reader"] // Lê os dois tipos comuns
+        },
+        locate: true,
+        frequency: 15 // Varredura rápida para atingir os 1-2 segundos
+    }, function(err) {
+        if (err) {
+            console.error("Erro Quagga:", err);
+            container.classList.add("hidden");
+            Swal.fire('Erro', 'Certifique-se de estar em HTTPS e permitir a câmera.', 'error');
+            return;
+        }
+        Quagga.start();
+        scannerAtivo = true;
+    });
 }
 
 Quagga.onDetected((data) => {
-  // Usamos o 'code' apenas se a precisão (fallback) for aceitável
-  const code = data.codeResult.code;
+    const code = data.codeResult.code;
+    
+    // Filtro para ignorar códigos mal lidos (ruído)
+    if (!code) return;
 
-  if (code === ultimoCodigoLido) {
-    leiturasConsecutivas++;
-  } else {
-    ultimoCodigoLido = code;
-    leiturasConsecutivas = 1;
-  }
+    if (code === ultimoCodigoLido) {
+        leiturasConsecutivas++;
+    } else {
+        ultimoCodigoLido = code;
+        leiturasConsecutivas = 1;
+    }
 
-  // Com frequency: 20, 3 leituras acontecem em frações de segundo
-  if (leiturasConsecutivas >= 3) {
-    leiturasConsecutivas = 0;
-    ultimoCodigoLido = null;
-
-    if (navigator.vibrate) navigator.vibrate(50); // Feedback rápido
-    pararScanner();
-    buscarEAdicionar(code);
-  }
+    // A mágica: Se ler o mesmo código 3 vezes em alta frequência, valida em ~1 segundo
+    if (leiturasConsecutivas >= 3) {
+        leiturasConsecutivas = 0;
+        ultimoCodigoLido = null;
+        
+        if (navigator.vibrate) navigator.vibrate(80); // Feedback instantâneo
+        pararScanner();
+        buscarEAdicionar(code);
+    }
 });
 
 function pararScanner() {
-  Quagga.stop();
-  scannerAtivo = false;
-  document.getElementById("scanner-container").classList.add("hidden");
-  // Limpa o vídeo para não travar a câmera
-  document.querySelector("#interactive").innerHTML = "";
+    if (!scannerAtivo) return;
+    Quagga.stop();
+    scannerAtivo = false;
+    document.getElementById("scanner-container").classList.add("hidden");
+    document.querySelector("#interactive").innerHTML = "";
 }
 
 // --- BUSCA API E MODAL DE ADIÇÃO ---
