@@ -86,10 +86,11 @@ window.removerItem = (index) => {
 function iniciarScanner() {
   if (scannerAtivo) return;
 
-  window.scrollTo({
-        top: 0,
-        behavior: 'instant' // 'instant' garante que não haja atraso na rolagem
-    });
+  // Localiza o elemento <main> que é o container que realmente possui o scroll
+  const mainContainer = document.querySelector("main");
+  if (mainContainer) {
+    mainContainer.scrollTop = 0; // Força o scroll do container para o topo
+  }
 
   const container = document.getElementById("scanner-container");
   const interactive = document.querySelector("#interactive");
