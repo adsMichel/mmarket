@@ -116,7 +116,7 @@ function iniciarScanner() {
         multiple: false,
       },
       locate: true,
-      frequency: 20, // Máxima frequência de varredura (20 vezes por segundo)
+      frequency: 10, // Máxima frequência de varredura (20 vezes por segundo)
     },
     function (err) {
       if (err) {
