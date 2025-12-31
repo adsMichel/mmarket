@@ -6,6 +6,11 @@ const STORAGE_HISTORY_KEY = "historicoPrecos";
 
 let scannerAtivo = false;
 
+// --- NOVAS VARIÁVEIS DE CONTROLE DE LEITURA ---
+let leiturasConsecutivas = 0;
+let ultimoCodigoLido = null;
+const LEITURAS_NECESSARIAS = 3; // Número de vezes para validar
+
 // --- ELEMENTOS DO DOM ---
 const containerListas = document.getElementById("container-listas");
 const valorTotalFooter = document.getElementById("valor-total-footer");
@@ -78,44 +83,42 @@ window.removerItem = (index) => {
 // --- LÓGICA DO SCANNER ---
 
 function iniciarScanner() {
-  console.log("iniciado");
   if (scannerAtivo) return;
 
-  // Garante que o container esteja visível antes de iniciar
+  // Resetar contadores ao abrir
+  leiturasConsecutivas = 0;
+  ultimoCodigoLido = null;
+
   const container = document.getElementById("scanner-container");
   container.classList.remove("hidden");
+  scannerAtivo = true;
 
   Quagga.init(
     {
       inputStream: {
         name: "Live",
         type: "LiveStream",
-        target: document.querySelector("#interactive"), // Onde a câmera aparece
+        target: document.querySelector("#interactive"),
         constraints: {
+          facingMode: "environment",
           width: { min: 640 },
           height: { min: 480 },
-          facingMode: "environment", // Força a câmera traseira no celular
+        },
+        area: {
+          // Foco centralizado para melhorar precisão
+          top: "25%",
+          right: "15%",
+          left: "15%",
+          bottom: "25%",
         },
       },
-      decoder: {
-        readers: ["ean_reader", "ean_8_reader"],
-      },
+      decoder: { readers: ["ean_reader", "ean_8_reader"] },
       locate: true,
+      frequency: 10, // Aumenta a cadência para a validação ser rápida
     },
-    function (err) {
-      if (err) {
-        console.error("Erro ao iniciar Quagga:", err);
-        Swal.fire({
-          icon: "error",
-          title: "Erro na Câmera",
-          text: "Não foi possível acessar a câmera. Verifique as permissões ou se está usando HTTPS.",
-        });
-        container.classList.add("hidden");
-        return;
-      }
-      console.log("Scanner iniciado com sucesso");
+    (err) => {
+      if (err) return console.error(err);
       Quagga.start();
-      scannerAtivo = true;
     }
   );
 }
@@ -126,11 +129,29 @@ function pararScanner() {
   scannerAtivo = false;
 }
 
-Quagga.onDetected(async (data) => {
-  const code = data.codeResult.code;
-  if (code) {
-    pararScanner();
-    buscarEAdicionar(code);
+Quagga.onDetected((data) => {
+  const codigoAtual = data.codeResult.code;
+
+  // Verifica se o código é válido (EAN-13 ou EAN-8)
+  if (codigoAtual && (codigoAtual.length === 13 || codigoAtual.length === 8)) {
+    if (codigoAtual === ultimoCodigoLido) {
+      leiturasConsecutivas++;
+    } else {
+      // Se mudar o código no meio do caminho, reseta a contagem
+      ultimoCodigoLido = codigoAtual;
+      leiturasConsecutivas = 1;
+    }
+
+    // Feedback visual ou log opcional
+    console.log(
+      `Validando: ${codigoAtual} (${leiturasConsecutivas}/${LEITURAS_NECESSARIAS})`
+    );
+
+    if (leiturasConsecutivas >= LEITURAS_NECESSARIAS) {
+      leiturasConsecutivas = 0; // Reseta para a próxima
+      pararScanner();
+      buscarEAdicionar(codigoAtual);
+    }
   }
 });
 
