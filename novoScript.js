@@ -84,76 +84,83 @@ window.removerItem = (index) => {
 // --- LÓGICA DO SCANNER ---
 
 function iniciarScanner() {
-    if (scannerAtivo) return;
+  if (scannerAtivo) return;
 
-    const container = document.getElementById("scanner-container");
-    const interactive = document.querySelector("#interactive");
-    
-    interactive.innerHTML = ""; // Limpa qualquer resíduo
-    container.classList.remove("hidden");
+  const container = document.getElementById("scanner-container");
+  const interactive = document.querySelector("#interactive");
 
-    Quagga.init({
-        inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: interactive,
-            constraints: {
-                width: 640,
-                height: 480,
-                facingMode: "environment" // Força câmera traseira
-            },
+  interactive.innerHTML = ""; // Limpa qualquer resíduo
+  container.classList.remove("hidden");
+
+  Quagga.init(
+    {
+      inputStream: {
+        name: "Live",
+        type: "LiveStream",
+        target: interactive,
+        constraints: {
+          width: 640,
+          height: 480,
+          facingMode: "environment", // Força câmera traseira
         },
-        locator: {
-            patchSize: "medium", // Equilíbrio entre velocidade e precisão
-            halfSample: true      // Processa menos pixels (mais rápido)
-        },
-        decoder: {
-            readers: ["ean_reader", "ean_8_reader"] // Lê os dois tipos comuns
-        },
-        locate: true,
-        frequency: 15 // Varredura rápida para atingir os 1-2 segundos
-    }, function(err) {
-        if (err) {
-            console.error("Erro Quagga:", err);
-            container.classList.add("hidden");
-            Swal.fire('Erro', 'Certifique-se de estar em HTTPS e permitir a câmera.', 'error');
-            return;
-        }
-        Quagga.start();
-        scannerAtivo = true;
-    });
+      },
+      locator: {
+        patchSize: "medium", // Equilíbrio entre velocidade e precisão
+        halfSample: true, // Processa menos pixels (mais rápido)
+      },
+      decoder: {
+        readers: ["ean_reader", "ean_8_reader"], // Lê os dois tipos comuns
+      },
+      locate: true,
+      frequency: 15, // Varredura rápida para atingir os 1-2 segundos
+    },
+    function (err) {
+      if (err) {
+        console.error("Erro Quagga:", err);
+        container.classList.add("hidden");
+        Swal.fire(
+          "Erro",
+          "Certifique-se de estar em HTTPS e permitir a câmera.",
+          "error"
+        );
+        return;
+      }
+      Quagga.start();
+      scannerAtivo = true;
+    }
+  );
 }
 
 Quagga.onDetected((data) => {
-    const code = data.codeResult.code;
-    
-    // Filtro para ignorar códigos mal lidos (ruído)
-    if (!code) return;
+  const code = data.codeResult.code;
 
-    if (code === ultimoCodigoLido) {
-        leiturasConsecutivas++;
-    } else {
-        ultimoCodigoLido = code;
-        leiturasConsecutivas = 1;
-    }
+  // Filtro para ignorar códigos mal lidos (ruído)
+  if (!code) return;
 
-    // A mágica: Se ler o mesmo código 3 vezes em alta frequência, valida em ~1 segundo
-    if (leiturasConsecutivas >= 3) {
-        leiturasConsecutivas = 0;
-        ultimoCodigoLido = null;
-        
-        if (navigator.vibrate) navigator.vibrate(80); // Feedback instantâneo
-        pararScanner();
-        buscarEAdicionar(code);
-    }
+  if (code === ultimoCodigoLido) {
+    leiturasConsecutivas++;
+  } else {
+    ultimoCodigoLido = code;
+    leiturasConsecutivas = 1;
+  }
+
+  // A mágica: Se ler o mesmo código 3 vezes em alta frequência, valida em ~1 segundo
+  if (leiturasConsecutivas >= 3) {
+    leiturasConsecutivas = 0;
+    ultimoCodigoLido = null;
+
+    if (navigator.vibrate) navigator.vibrate(80); // Feedback instantâneo
+    pararScanner();
+    buscarEAdicionar(code);
+  }
 });
 
 function pararScanner() {
-    if (!scannerAtivo) return;
-    Quagga.stop();
-    scannerAtivo = false;
-    document.getElementById("scanner-container").classList.add("hidden");
-    document.querySelector("#interactive").innerHTML = "";
+  if (!scannerAtivo) return;
+  Quagga.stop();
+  scannerAtivo = false;
+  document.getElementById("scanner-container").classList.add("hidden");
+  document.querySelector("#interactive").innerHTML = "";
 }
 
 // --- BUSCA API E MODAL DE ADIÇÃO ---
@@ -184,33 +191,36 @@ async function buscarEAdicionar(ean) {
 
     Swal.fire({
       title: "Confirmar Produto",
-      // Customizamos o estilo do SweetAlert para ser mais compacto
+      // Define a posição como 'top' e adicionamos uma margem personalizada
+      position: "top",
       customClass: {
-        popup: "rounded-3xl",
+        popup: "rounded-3xl mt-[20vh]", // mt-[20vh] move o modal para 20% da altura da tela
         title: "text-lg font-bold pt-4",
         htmlContainer: "mt-2",
       },
       html: `
-        <p class="text-xs text-gray-400 uppercase font-bold mb-3 tracking-wide">${nome}</p>
-        
-        <div class="flex gap-2 px-2">
-            <div class="flex-1">
-                <label class="block text-[10px] text-left ml-1 font-bold text-gray-400 uppercase">Qtd</label>
-                <input id="swal-qtd" type="number" 
-                    class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-sky-500 outline-none text-center" 
-                    placeholder="0" value="1">
-            </div>
-            <div class="flex-[2]">
-                <label class="block text-[10px] text-left ml-1 font-bold text-gray-400 uppercase">Preço Unitário</label>
-                <input id="swal-preco" type="number" step="0.01" 
-                    class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-sky-500 outline-none" 
-                    placeholder="R$ 0,00" value="${ultimoPreco}">
-            </div>
+    <p class="text-xs text-gray-400 uppercase font-bold mb-3 tracking-wide">${nome}</p>
+    
+    <div class="flex gap-2 px-2 mb-2">
+        <div class="flex-1">
+            <label class="block text-[10px] text-left ml-1 font-bold text-gray-400 uppercase">Qtd</label>
+            <input id="swal-qtd" type="number" 
+                class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-sky-500 outline-none text-center" 
+                placeholder="0" value="1">
         </div>
-    `,
+        <div class="flex-[2]">
+            <label class="block text-[10px] text-left ml-1 font-bold text-gray-400 uppercase">Preço Unitário</label>
+            <input id="swal-preco" type="number" step="0.01" 
+                class="w-full border border-gray-200 rounded-xl px-3 py-2 focus:ring-2 focus:ring-sky-500 outline-none" 
+                placeholder="R$ 0,00" value="${ultimoPreco}">
+        </div>
+    </div>
+  `,
       confirmButtonText: "Adicionar",
       confirmButtonColor: "#0284c7",
       focusConfirm: false,
+      // Isso evita que o modal "pule" quando o teclado do celular abrir
+      grow: false,
       preConfirm: () => {
         const qtd = document.getElementById("swal-qtd").value;
         const preco = document.getElementById("swal-preco").value;
