@@ -83,77 +83,80 @@ window.removerItem = (index) => {
 // --- LÓGICA DO SCANNER ---
 
 function iniciarScanner() {
-  if (scannerAtivo) return;
+    if (scannerAtivo) return;
 
-  // Resetar contadores ao abrir
-  leiturasConsecutivas = 0;
-  ultimoCodigoLido = null;
+    const container = document.getElementById("scanner-container");
+    const interactive = document.querySelector("#interactive");
+    
+    // Limpeza preventiva
+    interactive.innerHTML = "";
+    container.classList.remove("hidden");
 
-  const container = document.getElementById("scanner-container");
-  container.classList.remove("hidden");
-  scannerAtivo = true;
-
-  Quagga.init(
-    {
-      inputStream: {
-        name: "Live",
-        type: "LiveStream",
-        target: document.querySelector("#interactive"),
-        constraints: {
-          facingMode: "environment",
-          width: { min: 640 },
-          height: { min: 480 },
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: interactive,
+            constraints: {
+                // Removi larguras mínimas rígidas para maior compatibilidade
+                facingMode: "environment",
+                aspectRatio: { min: 1, max: 2 }
+            },
         },
-        area: {
-          // Foco centralizado para melhorar precisão
-          top: "25%",
-          right: "15%",
-          left: "15%",
-          bottom: "25%",
+        locator: {
+            patchSize: "medium",
+            halfSample: true
         },
-      },
-      decoder: { readers: ["ean_reader", "ean_8_reader"] },
-      locate: true,
-      frequency: 10, // Aumenta a cadência para a validação ser rápida
-    },
-    (err) => {
-      if (err) return console.error(err);
-      Quagga.start();
-    }
-  );
-}
-
-function pararScanner() {
-  Quagga.stop();
-  scannerContainer.classList.add("hidden");
-  scannerAtivo = false;
+        decoder: {
+            readers: ["ean_reader", "ean_8_reader"]
+        },
+        locate: true,
+        frequency: 10
+    }, function(err) {
+        if (err) {
+            console.error("Erro Quagga:", err);
+            Swal.fire('Erro', 'Câmera não disponível. Use HTTPS.', 'error');
+            container.classList.add("hidden");
+            return;
+        }
+        Quagga.start();
+        scannerAtivo = true;
+        console.log("Scanner iniciado");
+    });
 }
 
 Quagga.onDetected((data) => {
-  const codigoAtual = data.codeResult.code;
+    const code = data.codeResult.code;
+    
+    // Filtro básico de integridade
+    if (!code || code.length < 8) return;
 
-  // Verifica se o código é válido (EAN-13 ou EAN-8)
-  if (codigoAtual && (codigoAtual.length === 13 || codigoAtual.length === 8)) {
-    if (codigoAtual === ultimoCodigoLido) {
-      leiturasConsecutivas++;
+    if (code === ultimoCodigoLido) {
+        leiturasConsecutivas++;
     } else {
-      // Se mudar o código no meio do caminho, reseta a contagem
-      ultimoCodigoLido = codigoAtual;
-      leiturasConsecutivas = 1;
+        ultimoCodigoLido = code;
+        leiturasConsecutivas = 1;
     }
 
-    // Feedback visual ou log opcional
-    console.log(
-      `Validando: ${codigoAtual} (${leiturasConsecutivas}/${LEITURAS_NECESSARIAS})`
-    );
-
-    if (leiturasConsecutivas >= LEITURAS_NECESSARIAS) {
-      leiturasConsecutivas = 0; // Reseta para a próxima
-      pararScanner();
-      buscarEAdicionar(codigoAtual);
+    if (leiturasConsecutivas >= 3) {
+        leiturasConsecutivas = 0;
+        ultimoCodigoLido = null;
+        
+        // Feedback tátil (se disponível no celular)
+        if (navigator.vibrate) navigator.vibrate(100);
+        
+        pararScanner();
+        buscarEAdicionar(code);
     }
-  }
 });
+
+function pararScanner() {
+    Quagga.stop();
+    scannerAtivo = false;
+    document.getElementById("scanner-container").classList.add("hidden");
+    // Limpa o vídeo para não travar a câmera
+    document.querySelector("#interactive").innerHTML = "";
+}
 
 // --- BUSCA API E MODAL DE ADIÇÃO ---
 
