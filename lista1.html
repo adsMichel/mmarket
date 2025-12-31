@@ -17,6 +17,26 @@
             font-family: 'Satoshi', sans-serif;
             color: #1e293b;
         }
+
+        #interactive {
+            position: relative;
+        }
+
+        /* Cria um retângulo guia no centro do scanner */
+        #interactive::after {
+            content: "";
+            position: absolute;
+            top: 30%;
+            left: 20%;
+            right: 20%;
+            bottom: 30%;
+            border: 2px solid rgba(2, 132, 199, 0.5);
+            /* Azul sky-600 semi-transparente */
+            border-radius: 8px;
+            box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.3);
+            /* Escurece as bordas */
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -51,7 +71,8 @@
         </svg>
     </button>
 
-    <footer class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-6 pb-8 flex justify-between items-center shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40">
+    <footer
+        class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-6 pb-8 flex justify-between items-center shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-40">
         <span class="text-gray-500 font-semibold text-sm uppercase">Total</span>
         <span id="valor-total-footer" class="text-2xl font-black text-sky-900">R$ 0,00</span>
     </footer>
